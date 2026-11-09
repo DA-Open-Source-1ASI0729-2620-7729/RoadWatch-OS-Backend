@@ -18,7 +18,7 @@ public class DocumentVersion extends AuditableAbstractPersistenceEntity {
     private Integer versionNumber;
 
     @Column(nullable = false)
-    private String filetName;
+    private String fileName;
 
     @Column(nullable = false)
     private String storedFileName;
@@ -33,7 +33,7 @@ public class DocumentVersion extends AuditableAbstractPersistenceEntity {
                            Long uploadedByUserId) {
         this.documentId = documentId;
         this.versionNumber = versionNumber;
-        this.filetName = filetName;
+        this.fileName = filetName;
         this.storedFileName = storedFileName;
         this.uploadedByUserId = uploadedByUserId;
     }

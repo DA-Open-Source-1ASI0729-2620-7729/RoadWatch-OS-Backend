@@ -7,6 +7,7 @@ import com.vianexo.roadwatch.documentevidence.domain.repositories.NormativeDocum
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,5 +49,10 @@ public class NormativeDocumentService {
                     uploadedByUserId));
             return savedDocument;
         });
+    }
+
+    public Optional<DocumentVersion> findCurrentVersion(Long documentId) {
+        return versionRepository.findByDocumentId(documentId).stream()
+                .max(Comparator.comparing(DocumentVersion::getVersionNumber));
     }
 }
