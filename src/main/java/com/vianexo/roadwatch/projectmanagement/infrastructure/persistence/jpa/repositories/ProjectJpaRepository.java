@@ -13,4 +13,7 @@ public interface ProjectJpaRepository extends JpaRepository<ProjectJpaEntity, Lo
     List<ProjectJpaEntity> findAllByStatus(ProjectStatus status);
 
     Page<ProjectJpaEntity> findAllByStatus(ProjectStatus status, Pageable pageable);
+
+    Page<ProjectJpaEntity> findByStatusAndNameContainingIgnoreCase(ProjectStatus status, String name,
+                                                                    Pageable pageable);
 }

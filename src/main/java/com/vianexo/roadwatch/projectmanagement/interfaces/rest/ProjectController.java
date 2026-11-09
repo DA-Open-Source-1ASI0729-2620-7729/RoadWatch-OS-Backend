@@ -73,6 +73,19 @@ public class ProjectController {
                 .map(ProjectResourceFromEntityAssembler::toResourceFromEntity);
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Search projects by name")
+    @ApiResponse(responseCode = "200", description = "Matching projects returned")
+    @ApiResponse(responseCode = "400", description = "Invalid search criteria")
+    public PageResult<ProjectResource> searchProjectsByName(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "ACTIVE") ProjectStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return queryService.searchProjectsByName(name, status, page, size)
+                .map(ProjectResourceFromEntityAssembler::toResourceFromEntity);
+    }
+
     @PutMapping("/{projectId}")
     @Operation(summary = "Update a project")
     @ApiResponse(responseCode = "200", description = "Project updated")

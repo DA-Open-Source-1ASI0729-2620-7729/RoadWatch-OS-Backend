@@ -15,4 +15,6 @@ public interface ProjectRepository {
     List<Project> findAllByStatus(ProjectStatus status);
 
     PageResult<Project> findAllByStatus(ProjectStatus status, int page, int size);
+
+    PageResult<Project> findByNameContaining(ProjectStatus status, String name, int page, int size);
 }

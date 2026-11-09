@@ -58,6 +58,14 @@ public class ProjectRepositoryAdapter implements ProjectRepository {
                 page, size, result.getTotalElements(), result.getTotalPages());
     }
 
+    @Override
+    public PageResult<Project> findByNameContaining(ProjectStatus status, String name, int page, int size) {
+        var result = jpaRepository.findByStatusAndNameContainingIgnoreCase(status, name,
+                PageRequest.of(page, size, Sort.by("id")));
+        return new PageResult<>(result.getContent().stream().map(ProjectRepositoryAdapter::toDomain).toList(),
+                page, size, result.getTotalElements(), result.getTotalPages());
+    }
+
     private static Project toDomain(ProjectJpaEntity entity) {
         return new Project(entity.getId(), entity.getName(), entity.getDescription(), entity.getLocation(),
                 entity.getStatus(), entity.getResponsibleUserId(), toLocalDateTime(entity.getCreatedAt()),
