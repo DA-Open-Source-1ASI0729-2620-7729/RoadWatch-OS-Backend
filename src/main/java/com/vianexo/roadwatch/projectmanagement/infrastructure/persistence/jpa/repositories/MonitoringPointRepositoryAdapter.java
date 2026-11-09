@@ -2,7 +2,10 @@ package com.vianexo.roadwatch.projectmanagement.infrastructure.persistence.jpa.r
 
 import com.vianexo.roadwatch.projectmanagement.domain.model.entities.MonitoringPoint;
 import com.vianexo.roadwatch.projectmanagement.domain.repositories.MonitoringPointRepository;
+import com.vianexo.roadwatch.projectmanagement.domain.repositories.PageResult;
 import com.vianexo.roadwatch.projectmanagement.infrastructure.persistence.jpa.entities.MonitoringPointJpaEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -47,6 +50,14 @@ public class MonitoringPointRepositoryAdapter implements MonitoringPointReposito
         return jpaRepository.findByProjectId(projectId).stream()
                 .map(MonitoringPointRepositoryAdapter::toDomain)
                 .toList();
+    }
+
+    @Override
+    public PageResult<MonitoringPoint> findByProjectId(Long projectId, int page, int size) {
+        var result = jpaRepository.findByProjectId(projectId, PageRequest.of(page, size, Sort.by("id")));
+        return new PageResult<>(result.getContent().stream()
+                .map(MonitoringPointRepositoryAdapter::toDomain).toList(),
+                page, size, result.getTotalElements(), result.getTotalPages());
     }
 
     private static MonitoringPoint toDomain(MonitoringPointJpaEntity entity) {

@@ -3,7 +3,10 @@ package com.vianexo.roadwatch.projectmanagement.infrastructure.persistence.jpa.r
 import com.vianexo.roadwatch.projectmanagement.domain.model.aggregates.Project;
 import com.vianexo.roadwatch.projectmanagement.domain.model.valueobjects.ProjectStatus;
 import com.vianexo.roadwatch.projectmanagement.domain.repositories.ProjectRepository;
+import com.vianexo.roadwatch.projectmanagement.domain.repositories.PageResult;
 import com.vianexo.roadwatch.projectmanagement.infrastructure.persistence.jpa.entities.ProjectJpaEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -46,6 +49,13 @@ public class ProjectRepositoryAdapter implements ProjectRepository {
         return jpaRepository.findAllByStatus(status).stream()
                 .map(ProjectRepositoryAdapter::toDomain)
                 .toList();
+    }
+
+    @Override
+    public PageResult<Project> findAllByStatus(ProjectStatus status, int page, int size) {
+        var result = jpaRepository.findAllByStatus(status, PageRequest.of(page, size, Sort.by("id")));
+        return new PageResult<>(result.getContent().stream().map(ProjectRepositoryAdapter::toDomain).toList(),
+                page, size, result.getTotalElements(), result.getTotalPages());
     }
 
     private static Project toDomain(ProjectJpaEntity entity) {

@@ -13,4 +13,6 @@ public interface ProjectRepository {
     Optional<Project> findById(Long id);
 
     List<Project> findAllByStatus(ProjectStatus status);
+
+    PageResult<Project> findAllByStatus(ProjectStatus status, int page, int size);
 }

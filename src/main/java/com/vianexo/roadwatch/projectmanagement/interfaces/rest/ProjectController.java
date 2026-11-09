@@ -3,6 +3,7 @@ package com.vianexo.roadwatch.projectmanagement.interfaces.rest;
 import com.vianexo.roadwatch.projectmanagement.application.commandservices.ProjectCommandService;
 import com.vianexo.roadwatch.projectmanagement.application.queryservices.ProjectQueryService;
 import com.vianexo.roadwatch.projectmanagement.domain.model.valueobjects.ProjectStatus;
+import com.vianexo.roadwatch.projectmanagement.domain.repositories.PageResult;
 import com.vianexo.roadwatch.projectmanagement.interfaces.rest.resources.AssignProjectResponsibleResource;
 import com.vianexo.roadwatch.projectmanagement.interfaces.rest.resources.CreateProjectResource;
 import com.vianexo.roadwatch.projectmanagement.interfaces.rest.resources.ProjectResource;
@@ -26,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/projects")
@@ -64,12 +64,13 @@ public class ProjectController {
     @Operation(summary = "List projects by status")
     @ApiResponse(responseCode = "200", description = "Projects returned")
     @ApiResponse(responseCode = "400", description = "Invalid project status")
-    public List<ProjectResource> getProjectsByStatus(
+    public PageResult<ProjectResource> getProjectsByStatus(
             @Parameter(in = ParameterIn.QUERY, description = "Project status: ACTIVE or ARCHIVED")
-            @RequestParam(defaultValue = "ACTIVE") ProjectStatus status) {
-        return queryService.getProjectsByStatus(status).stream()
-                .map(ProjectResourceFromEntityAssembler::toResourceFromEntity)
-                .toList();
+            @RequestParam(defaultValue = "ACTIVE") ProjectStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return queryService.getProjectsByStatus(status, page, size)
+                .map(ProjectResourceFromEntityAssembler::toResourceFromEntity);
     }
 
     @PutMapping("/{projectId}")
