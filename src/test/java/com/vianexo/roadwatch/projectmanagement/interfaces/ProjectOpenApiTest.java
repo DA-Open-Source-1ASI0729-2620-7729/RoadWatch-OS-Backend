@@ -6,6 +6,8 @@ import com.vianexo.roadwatch.projectmanagement.application.queryservices.Monitor
 import com.vianexo.roadwatch.projectmanagement.application.queryservices.ProjectQueryService;
 import com.vianexo.roadwatch.projectmanagement.interfaces.rest.MonitoringPointController;
 import com.vianexo.roadwatch.projectmanagement.interfaces.rest.ProjectController;
+import com.vianexo.roadwatch.projectmanagement.interfaces.rest.ProjectManagementExceptionHandler;
+import com.vianexo.roadwatch.shared.interfaces.rest.GlobalExceptionHandler;
 import com.vianexo.roadwatch.shared.infrastructure.documentation.openapi.configuration.OpenApiConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,8 @@ class ProjectOpenApiTest {
             HibernateJpaAutoConfiguration.class,
             DataJpaRepositoriesAutoConfiguration.class
     })
-    @Import({ProjectController.class, MonitoringPointController.class, OpenApiConfiguration.class})
+    @Import({ProjectController.class, MonitoringPointController.class, ProjectManagementExceptionHandler.class,
+            GlobalExceptionHandler.class, OpenApiConfiguration.class})
     static class TestApplication {
 
         @Bean
