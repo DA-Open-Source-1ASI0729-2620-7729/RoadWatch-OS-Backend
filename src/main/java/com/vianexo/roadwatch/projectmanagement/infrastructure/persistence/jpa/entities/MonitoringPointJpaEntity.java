@@ -5,6 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
@@ -17,8 +21,10 @@ public class MonitoringPointJpaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long projectId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "project_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_monitoring_points_project"))
+    private ProjectJpaEntity project;
 
     @Column(nullable = false)
     private String name;
@@ -37,9 +43,9 @@ public class MonitoringPointJpaEntity {
     protected MonitoringPointJpaEntity() {
     }
 
-    public MonitoringPointJpaEntity(Long projectId, String name, BigDecimal latitude, BigDecimal longitude,
+    public MonitoringPointJpaEntity(ProjectJpaEntity project, String name, BigDecimal latitude, BigDecimal longitude,
                                     Long normativeThresholdId, boolean active) {
-        this.projectId = projectId;
+        this.project = project;
         update(name, latitude, longitude, normativeThresholdId, active);
     }
 
@@ -57,7 +63,7 @@ public class MonitoringPointJpaEntity {
     }
 
     public Long getProjectId() {
-        return projectId;
+        return project.getId();
     }
 
     public String getName() {

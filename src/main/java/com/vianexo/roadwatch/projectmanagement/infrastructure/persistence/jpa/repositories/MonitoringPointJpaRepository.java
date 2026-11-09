@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface MonitoringPointJpaRepository extends JpaRepository<MonitoringPointJpaEntity, Long> {
 
-    List<MonitoringPointJpaEntity> findByProjectId(Long projectId);
+    List<MonitoringPointJpaEntity> findByProject_Id(Long projectId);
 
-    Page<MonitoringPointJpaEntity> findByProjectId(Long projectId, Pageable pageable);
+    Page<MonitoringPointJpaEntity> findByProject_Id(Long projectId, Pageable pageable);
 }

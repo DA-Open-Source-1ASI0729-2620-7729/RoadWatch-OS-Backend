@@ -16,16 +16,20 @@ import java.util.Optional;
 public class MonitoringPointRepositoryAdapter implements MonitoringPointRepository {
 
     private final MonitoringPointJpaRepository jpaRepository;
+    private final ProjectJpaRepository projectJpaRepository;
 
-    public MonitoringPointRepositoryAdapter(MonitoringPointJpaRepository jpaRepository) {
+    public MonitoringPointRepositoryAdapter(MonitoringPointJpaRepository jpaRepository,
+                                            ProjectJpaRepository projectJpaRepository) {
         this.jpaRepository = jpaRepository;
+        this.projectJpaRepository = projectJpaRepository;
     }
 
     @Override
     public MonitoringPoint save(MonitoringPoint point) {
         MonitoringPointJpaEntity entity;
         if (point.getId() == null) {
-            entity = new MonitoringPointJpaEntity(point.getProjectId(), point.getName(),
+            entity = new MonitoringPointJpaEntity(projectJpaRepository.getReferenceById(point.getProjectId()),
+                    point.getName(),
                     BigDecimal.valueOf(point.getLatitude()), BigDecimal.valueOf(point.getLongitude()),
                     point.getNormativeThresholdId(), point.isActive());
         } else {
@@ -47,14 +51,14 @@ public class MonitoringPointRepositoryAdapter implements MonitoringPointReposito
 
     @Override
     public List<MonitoringPoint> findByProjectId(Long projectId) {
-        return jpaRepository.findByProjectId(projectId).stream()
+        return jpaRepository.findByProject_Id(projectId).stream()
                 .map(MonitoringPointRepositoryAdapter::toDomain)
                 .toList();
     }
 
     @Override
     public PageResult<MonitoringPoint> findByProjectId(Long projectId, int page, int size) {
-        var result = jpaRepository.findByProjectId(projectId, PageRequest.of(page, size, Sort.by("id")));
+        var result = jpaRepository.findByProject_Id(projectId, PageRequest.of(page, size, Sort.by("id")));
         return new PageResult<>(result.getContent().stream()
                 .map(MonitoringPointRepositoryAdapter::toDomain).toList(),
                 page, size, result.getTotalElements(), result.getTotalPages());
