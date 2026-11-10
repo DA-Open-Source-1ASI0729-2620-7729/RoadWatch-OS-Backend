@@ -29,11 +29,10 @@ public class MonitoringPointCommandService {
                 normativeThresholdId));
     }
 
-    public MonitoringPoint updatePoint(Long projectId, Long pointId, String name, double latitude,
+    public MonitoringPoint updatePoint(Long projectId, Long pointId, double latitude,
                                        double longitude, Long normativeThresholdId) {
         requireActiveProject(projectId);
         MonitoringPoint point = findPoint(projectId, pointId);
-        point.rename(name);
         point.updateLocation(latitude, longitude);
         point.updateThreshold(normativeThresholdId);
         return pointRepository.save(point);

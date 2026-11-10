@@ -4,7 +4,7 @@ public class MonitoringPoint {
 
     private final Long id;
     private final Long projectId;
-    private String name;
+    private final String name;
     private double latitude;
     private double longitude;
     private Long normativeThresholdId;
@@ -28,11 +28,6 @@ public class MonitoringPoint {
         this.longitude = longitude;
         this.normativeThresholdId = normativeThresholdId;
         this.active = active;
-    }
-
-    public void rename(String name) {
-        requireActive();
-        this.name = requiredName(name);
     }
 
     public void updateLocation(double latitude, double longitude) {

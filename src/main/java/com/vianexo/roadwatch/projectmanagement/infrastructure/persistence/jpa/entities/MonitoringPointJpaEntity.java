@@ -46,12 +46,11 @@ public class MonitoringPointJpaEntity {
     public MonitoringPointJpaEntity(ProjectJpaEntity project, String name, BigDecimal latitude, BigDecimal longitude,
                                     Long normativeThresholdId, boolean active) {
         this.project = project;
-        update(name, latitude, longitude, normativeThresholdId, active);
+        this.name = name;
+        update(latitude, longitude, normativeThresholdId, active);
     }
 
-    public void update(String name, BigDecimal latitude, BigDecimal longitude, Long normativeThresholdId,
-                       boolean active) {
-        this.name = name;
+    public void update(BigDecimal latitude, BigDecimal longitude, Long normativeThresholdId, boolean active) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.normativeThresholdId = normativeThresholdId;

@@ -82,7 +82,7 @@ public class MonitoringPointController {
     public MonitoringPointResource updatePoint(@PathVariable Long projectId, @PathVariable Long pointId,
             @Valid @RequestBody UpdateMonitoringPointResource resource) {
         return MonitoringPointResourceFromEntityAssembler.toResourceFromEntity(
-                commandService.updatePoint(projectId, pointId, resource.name(), resource.latitude(),
+                commandService.updatePoint(projectId, pointId, resource.latitude(),
                         resource.longitude(), resource.normativeThresholdId()));
     }
 

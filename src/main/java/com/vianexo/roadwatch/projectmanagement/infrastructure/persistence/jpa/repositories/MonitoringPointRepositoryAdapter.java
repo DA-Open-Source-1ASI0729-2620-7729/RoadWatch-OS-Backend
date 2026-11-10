@@ -35,8 +35,8 @@ public class MonitoringPointRepositoryAdapter implements MonitoringPointReposito
             if (!entity.getProjectId().equals(point.getProjectId())) {
                 throw new IllegalArgumentException("Monitoring point project cannot be changed");
             }
-            entity.update(point.getName(), BigDecimal.valueOf(point.getLatitude()),
-                    BigDecimal.valueOf(point.getLongitude()), point.getNormativeThresholdId(), point.isActive());
+            entity.update(BigDecimal.valueOf(point.getLatitude()), BigDecimal.valueOf(point.getLongitude()),
+                    point.getNormativeThresholdId(), point.isActive());
         }
         return toDomain(jpaRepository.save(entity));
     }
