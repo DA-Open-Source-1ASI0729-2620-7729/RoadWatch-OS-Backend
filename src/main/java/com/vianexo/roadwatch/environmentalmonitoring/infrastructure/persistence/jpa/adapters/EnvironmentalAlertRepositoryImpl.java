@@ -34,7 +34,7 @@ public class EnvironmentalAlertRepositoryImpl implements EnvironmentalAlertRepos
     }
 
     @Override
-    public List<EnvironmentalAlert> findAllByProjectIdOrderByCreatedAtDesc(ProjectId projectId) {
-        return jpaRepository.findAllByProjectIdOrderByCreatedAtDesc(projectId);
+    public List<EnvironmentalAlert> findAllByProjectIdOrderByTriggeredAtDesc(ProjectId projectId) {
+        return jpaRepository.findAllByProjectIdOrderByTriggeredAtDesc(projectId);
     }
 }
