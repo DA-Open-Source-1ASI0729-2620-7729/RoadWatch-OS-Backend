@@ -4,6 +4,7 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAll
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementByIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByMonitoringPointIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByProjectIdQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByDateRangeQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementCommandService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementQueryService;
 import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.resources.EnvironmentalMeasurementResource;
@@ -24,7 +25,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -65,11 +68,16 @@ public class EnvironmentalMeasurementsController {
     })
     public ResponseEntity<List<EnvironmentalMeasurementResource>> getMeasurements(
             @RequestParam(required = false) Long projectId,
-            @RequestParam(required = false) Long monitoringPointId
+            @RequestParam(required = false) Long monitoringPointId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
         var measurements = queryService.handle(new GetAllEnvironmentalMeasurementsQuery());
 
-        if (projectId != null) {
+        if (monitoringPointId != null && startDate != null && endDate != null) {
+            measurements = queryService.handle(new GetEnvironmentalMeasurementsByDateRangeQuery(
+                    monitoringPointId, startDate, endDate));
+        } else if (projectId != null) {
             measurements = queryService.handle(new GetEnvironmentalMeasurementsByProjectIdQuery(projectId));
         } else if (monitoringPointId != null) {
             measurements = queryService.handle(

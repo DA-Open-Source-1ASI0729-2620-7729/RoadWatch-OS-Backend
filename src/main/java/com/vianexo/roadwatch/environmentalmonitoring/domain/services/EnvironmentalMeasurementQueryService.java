@@ -11,4 +11,5 @@ public interface EnvironmentalMeasurementQueryService {
     Optional<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementByIdQuery query);
     List<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementsByProjectIdQuery query);
     List<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementsByMonitoringPointIdQuery query);
+    List<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementsByDateRangeQuery query);
 }

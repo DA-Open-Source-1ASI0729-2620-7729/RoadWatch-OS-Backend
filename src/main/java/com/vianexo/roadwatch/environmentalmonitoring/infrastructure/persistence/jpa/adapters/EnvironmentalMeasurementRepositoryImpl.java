@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDateTime;
 
 @Repository
 public class EnvironmentalMeasurementRepositoryImpl implements EnvironmentalMeasurementRepository {
@@ -43,5 +44,12 @@ public class EnvironmentalMeasurementRepositoryImpl implements EnvironmentalMeas
     @Override
     public List<EnvironmentalMeasurement> findAllByMonitoringPointIdOrderByMeasuredAtDesc(MonitoringPointId monitoringPointId) {
         return jpaRepository.findAllByMonitoringPointIdOrderByMeasuredAtDesc(monitoringPointId);
+    }
+
+    @Override
+    public List<EnvironmentalMeasurement> findAllByMonitoringPointIdAndMeasuredAtBetweenOrderByMeasuredAtDesc(
+            MonitoringPointId monitoringPointId, LocalDateTime startDate, LocalDateTime endDate) {
+        return jpaRepository.findAllByMonitoringPointIdAndMeasuredAtBetweenOrderByMeasuredAtDesc(
+                monitoringPointId, startDate, endDate);
     }
 }

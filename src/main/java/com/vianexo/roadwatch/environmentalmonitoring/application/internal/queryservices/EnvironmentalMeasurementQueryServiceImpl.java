@@ -5,6 +5,7 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAll
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementByIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByMonitoringPointIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByProjectIdQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByDateRangeQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.MonitoringPointId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementQueryService;
@@ -42,6 +43,15 @@ public class EnvironmentalMeasurementQueryServiceImpl implements EnvironmentalMe
     public List<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementsByMonitoringPointIdQuery query) {
         return measurementRepository.findAllByMonitoringPointIdOrderByMeasuredAtDesc(
                 new MonitoringPointId(query.monitoringPointId())
+        );
+    }
+
+    @Override
+    public List<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementsByDateRangeQuery query) {
+        return measurementRepository.findAllByMonitoringPointIdAndMeasuredAtBetweenOrderByMeasuredAtDesc(
+                new MonitoringPointId(query.monitoringPointId()),
+                query.startDate().atStartOfDay(),
+                query.endDate().plusDays(1).atStartOfDay().minusNanos(1)
         );
     }
 }
