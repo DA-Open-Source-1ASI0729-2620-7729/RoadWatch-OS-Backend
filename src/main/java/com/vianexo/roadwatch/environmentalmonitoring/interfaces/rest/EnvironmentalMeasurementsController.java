@@ -72,6 +72,11 @@ public class EnvironmentalMeasurementsController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
+        if ((startDate == null) != (endDate == null)
+                || (startDate != null && monitoringPointId == null)) {
+            return ResponseEntity.badRequest().build();
+        }
+
         var measurements = queryService.handle(new GetAllEnvironmentalMeasurementsQuery());
 
         if (monitoringPointId != null && startDate != null && endDate != null) {
