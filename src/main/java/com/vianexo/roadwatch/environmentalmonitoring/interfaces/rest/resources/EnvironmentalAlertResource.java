@@ -17,6 +17,7 @@ public record EnvironmentalAlertResource(
         BigDecimal thresholdLimit,
         AlertSeverity severity,
         AlertStatus status,
+        boolean acknowledged,
         String message,
         LocalDateTime triggeredAt
 ) {}

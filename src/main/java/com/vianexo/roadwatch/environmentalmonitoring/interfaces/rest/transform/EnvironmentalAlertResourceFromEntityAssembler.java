@@ -15,6 +15,7 @@ public class EnvironmentalAlertResourceFromEntityAssembler {
                 entity.getThresholdLimit(),
                 entity.getSeverity(),
                 entity.getStatus(),
+                entity.isAcknowledged(),
                 entity.getMessage(),
                 entity.getTriggeredAt()
         );
