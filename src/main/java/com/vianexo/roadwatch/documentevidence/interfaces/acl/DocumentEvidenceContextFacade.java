@@ -1,6 +1,7 @@
 package com.vianexo.roadwatch.documentevidence.interfaces.acl;
 
 import com.vianexo.roadwatch.documentevidence.application.services.NormativeDocumentService;
+import com.vianexo.roadwatch.documentevidence.application.services.EvidenceService;
 import com.vianexo.roadwatch.documentevidence.domain.model.aggregates.NormativeDocument;
 import com.vianexo.roadwatch.documentevidence.domain.model.valueobjects.DocumentStatus;
 import org.springframework.stereotype.Component;
@@ -11,9 +12,12 @@ import java.util.List;
 public class DocumentEvidenceContextFacade {
 
     private final NormativeDocumentService documentService;
+    private final EvidenceService evidenceService;
 
-    public DocumentEvidenceContextFacade(NormativeDocumentService documentService) {
+    public DocumentEvidenceContextFacade(NormativeDocumentService documentService,
+                                         EvidenceService evidenceService) {
         this.documentService = documentService;
+        this.evidenceService = evidenceService;
     }
 
     public int countRequiredDocuments() {
@@ -44,6 +48,10 @@ public class DocumentEvidenceContextFacade {
                 .map(NormativeDocument::getProjectId)
                 .distinct()
                 .toList();
+    }
+
+    public boolean hasEvidenceForIncident(Long incidentId) {
+        return evidenceService.hasEvidenceForIncident(incidentId);
     }
 
     private boolean isPending(NormativeDocument document) {
