@@ -14,7 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -42,9 +47,11 @@ public class EnvironmentalAlertsController {
     public ResponseEntity<List<EnvironmentalAlertResource>> getAlerts(
             @RequestParam(required = false) Long projectId
     ) {
-        var alerts = (projectId != null)
-                ? queryService.handle(new GetEnvironmentalAlertsByProjectIdQuery(projectId))
-                : queryService.handle(new GetAllEnvironmentalAlertsQuery());
+        var alerts = queryService.handle(new GetAllEnvironmentalAlertsQuery());
+
+        if (projectId != null) {
+            alerts = queryService.handle(new GetEnvironmentalAlertsByProjectIdQuery(projectId));
+        }
 
         var resources = alerts.stream()
                 .map(EnvironmentalAlertResourceFromEntityAssembler::toResourceFromEntity)
@@ -60,10 +67,12 @@ public class EnvironmentalAlertsController {
     })
     public ResponseEntity<EnvironmentalAlertResource> acknowledgeAlert(@PathVariable Long alertId) {
         var updated = commandService.handle(new AcknowledgeEnvironmentalAlertCommand(alertId));
-        return updated
-                .map(EnvironmentalAlertResourceFromEntityAssembler::toResourceFromEntity)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (updated.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var resource = EnvironmentalAlertResourceFromEntityAssembler.toResourceFromEntity(updated.get());
+        return ResponseEntity.ok(resource);
     }
 
     @PatchMapping("/{alertId}/resolutions")
@@ -74,9 +83,11 @@ public class EnvironmentalAlertsController {
     })
     public ResponseEntity<EnvironmentalAlertResource> resolveAlert(@PathVariable Long alertId) {
         var updated = commandService.handle(new ResolveEnvironmentalAlertCommand(alertId));
-        return updated
-                .map(EnvironmentalAlertResourceFromEntityAssembler::toResourceFromEntity)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (updated.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var resource = EnvironmentalAlertResourceFromEntityAssembler.toResourceFromEntity(updated.get());
+        return ResponseEntity.ok(resource);
     }
 }

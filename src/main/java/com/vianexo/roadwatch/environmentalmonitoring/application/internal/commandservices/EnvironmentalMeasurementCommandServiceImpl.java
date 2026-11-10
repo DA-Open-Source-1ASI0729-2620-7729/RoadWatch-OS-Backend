@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
-
 @Service
 public class EnvironmentalMeasurementCommandServiceImpl implements EnvironmentalMeasurementCommandService {
 
@@ -37,36 +35,29 @@ public class EnvironmentalMeasurementCommandServiceImpl implements Environmental
 
     @Override
     @Transactional
-    public Optional<EnvironmentalMeasurement> handle(RegisterEnvironmentalMeasurementCommand command) {
-        var thresholdOpt = thresholdRepository.findByProjectIdAndIndicatorTypeAndActiveTrue(
+    public EnvironmentalMeasurement handle(RegisterEnvironmentalMeasurementCommand command) {
+        var threshold = thresholdRepository.findByProjectIdAndIndicatorTypeAndActiveTrue(
                 new ProjectId(command.projectId()),
-                command.indicatorType()
-        );
+                command.indicatorType());
+        BigDecimal appliedLimit = BigDecimal.ZERO;
+        MeasurementStatus status = MeasurementStatus.COMPLIANT;
 
-        BigDecimal appliedLimit = thresholdOpt
-                .map(t -> t.getMaxPermissibleLimit())
-                .orElse(BigDecimal.ZERO);
+        if (threshold.isPresent()) {
+            appliedLimit = threshold.get().getMaxPermissibleLimit();
+            status = threshold.get().evaluate(command.measuredValue());
+        }
 
-        MeasurementStatus evaluatedStatus = thresholdOpt
-                .map(t -> t.evaluate(command.measuredValue()))
-                .orElse(MeasurementStatus.COMPLIANT);
-
-        var measurement = new EnvironmentalMeasurement(command, appliedLimit, evaluatedStatus);
+        var measurement = new EnvironmentalMeasurement(command, appliedLimit, status);
         var savedMeasurement = measurementRepository.save(measurement);
 
-        if (evaluatedStatus == MeasurementStatus.WARNING || evaluatedStatus == MeasurementStatus.CRITICAL) {
-            AlertSeverity severity = evaluatedStatus == MeasurementStatus.CRITICAL
-                    ? AlertSeverity.CRITICAL
-                    : AlertSeverity.HIGH;
+        if (status == MeasurementStatus.WARNING || status == MeasurementStatus.CRITICAL) {
+            AlertSeverity severity;
 
-            String alertMessage = String.format(
-                    "Indicator %s recorded %s %s (limit: %s %s)",
-                    command.indicatorType().name(),
-                    command.measuredValue(),
-                    command.unit(),
-                    appliedLimit,
-                    command.unit()
-            );
+            if (status == MeasurementStatus.CRITICAL) {
+                severity = AlertSeverity.CRITICAL;
+            } else {
+                severity = AlertSeverity.HIGH;
+            }
 
             var alert = new EnvironmentalAlert(
                     command.projectId(),
@@ -76,11 +67,10 @@ public class EnvironmentalMeasurementCommandServiceImpl implements Environmental
                     command.measuredValue(),
                     appliedLimit,
                     severity,
-                    alertMessage
-            );
+                    "Environmental threshold exceeded");
             alertRepository.save(alert);
         }
 
-        return Optional.of(savedMeasurement);
+        return savedMeasurement;
     }
 }

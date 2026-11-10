@@ -1,7 +1,10 @@
 package com.vianexo.roadwatch.environmentalmonitoring.application.internal.queryservices;
 
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.EnvironmentalMeasurement;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.*;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAllEnvironmentalMeasurementsQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementByIdQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByMonitoringPointIdQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByProjectIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.MonitoringPointId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementQueryService;

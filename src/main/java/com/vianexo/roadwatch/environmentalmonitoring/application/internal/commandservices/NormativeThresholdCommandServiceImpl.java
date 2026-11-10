@@ -8,8 +8,6 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.Normati
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 public class NormativeThresholdCommandServiceImpl implements NormativeThresholdCommandService {
 
@@ -21,20 +19,19 @@ public class NormativeThresholdCommandServiceImpl implements NormativeThresholdC
 
     @Override
     @Transactional
-    public Optional<NormativeThreshold> handle(UpsertNormativeThresholdCommand command) {
-        var existingOpt = thresholdRepository.findByProjectIdAndIndicatorTypeAndActiveTrue(
+    public NormativeThreshold handle(UpsertNormativeThresholdCommand command) {
+        var existingThreshold = thresholdRepository.findByProjectIdAndIndicatorTypeAndActiveTrue(
                 new ProjectId(command.projectId()),
-                command.indicatorType()
-        );
+                command.indicatorType());
 
         NormativeThreshold threshold;
-        if (existingOpt.isPresent()) {
-            threshold = existingOpt.get();
+        if (existingThreshold.isPresent()) {
+            threshold = existingThreshold.get();
             threshold.updateLimits(command);
         } else {
             threshold = new NormativeThreshold(command);
         }
 
-        return Optional.of(thresholdRepository.save(threshold));
+        return thresholdRepository.save(threshold);
     }
 }

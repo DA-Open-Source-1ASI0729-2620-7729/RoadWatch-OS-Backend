@@ -1,6 +1,9 @@
 package com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest;
 
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.*;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAllEnvironmentalMeasurementsQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementByIdQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByMonitoringPointIdQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByProjectIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementCommandService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementQueryService;
 import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.resources.EnvironmentalMeasurementResource;
@@ -14,7 +17,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -45,11 +54,8 @@ public class EnvironmentalMeasurementsController {
     ) {
         var command = RegisterEnvironmentalMeasurementCommandFromResourceAssembler.toCommandFromResource(resource);
         var measurement = commandService.handle(command);
-        if (measurement.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        var measurementResource = EnvironmentalMeasurementResourceFromEntityAssembler.toResourceFromEntity(measurement.get());
-        return new ResponseEntity<>(measurementResource, HttpStatus.CREATED);
+        var measurementResource = EnvironmentalMeasurementResourceFromEntityAssembler.toResourceFromEntity(measurement);
+        return ResponseEntity.status(HttpStatus.CREATED).body(measurementResource);
     }
 
     @GetMapping
@@ -61,11 +67,14 @@ public class EnvironmentalMeasurementsController {
             @RequestParam(required = false) Long projectId,
             @RequestParam(required = false) Long monitoringPointId
     ) {
-        var measurements = (projectId != null)
-                ? queryService.handle(new GetEnvironmentalMeasurementsByProjectIdQuery(projectId))
-                : (monitoringPointId != null)
-                ? queryService.handle(new GetEnvironmentalMeasurementsByMonitoringPointIdQuery(monitoringPointId))
-                : queryService.handle(new GetAllEnvironmentalMeasurementsQuery());
+        var measurements = queryService.handle(new GetAllEnvironmentalMeasurementsQuery());
+
+        if (projectId != null) {
+            measurements = queryService.handle(new GetEnvironmentalMeasurementsByProjectIdQuery(projectId));
+        } else if (monitoringPointId != null) {
+            measurements = queryService.handle(
+                    new GetEnvironmentalMeasurementsByMonitoringPointIdQuery(monitoringPointId));
+        }
 
         var resources = measurements.stream()
                 .map(EnvironmentalMeasurementResourceFromEntityAssembler::toResourceFromEntity)
@@ -81,9 +90,11 @@ public class EnvironmentalMeasurementsController {
     })
     public ResponseEntity<EnvironmentalMeasurementResource> getMeasurementById(@PathVariable Long measurementId) {
         var measurement = queryService.handle(new GetEnvironmentalMeasurementByIdQuery(measurementId));
-        return measurement
-                .map(EnvironmentalMeasurementResourceFromEntityAssembler::toResourceFromEntity)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        if (measurement.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var resource = EnvironmentalMeasurementResourceFromEntityAssembler.toResourceFromEntity(measurement.get());
+        return ResponseEntity.ok(resource);
     }
 }

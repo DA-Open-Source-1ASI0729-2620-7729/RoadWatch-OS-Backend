@@ -22,18 +22,26 @@ public class EnvironmentalAlertCommandServiceImpl implements EnvironmentalAlertC
     @Override
     @Transactional
     public Optional<EnvironmentalAlert> handle(AcknowledgeEnvironmentalAlertCommand command) {
-        return alertRepository.findById(command.alertId()).map(alert -> {
-            alert.acknowledge();
-            return alertRepository.save(alert);
-        });
+        var alert = alertRepository.findById(command.alertId());
+
+        if (alert.isEmpty()) {
+            return Optional.empty();
+        }
+
+        alert.get().acknowledge();
+        return Optional.of(alertRepository.save(alert.get()));
     }
 
     @Override
     @Transactional
     public Optional<EnvironmentalAlert> handle(ResolveEnvironmentalAlertCommand command) {
-        return alertRepository.findById(command.alertId()).map(alert -> {
-            alert.resolve();
-            return alertRepository.save(alert);
-        });
+        var alert = alertRepository.findById(command.alertId());
+
+        if (alert.isEmpty()) {
+            return Optional.empty();
+        }
+
+        alert.get().resolve();
+        return Optional.of(alertRepository.save(alert.get()));
     }
 }
