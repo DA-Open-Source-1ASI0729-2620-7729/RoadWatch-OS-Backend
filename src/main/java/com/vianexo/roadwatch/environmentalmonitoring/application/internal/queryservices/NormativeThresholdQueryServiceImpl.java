@@ -4,7 +4,7 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.Nor
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetNormativeThresholdsByProjectIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.NormativeThresholdQueryService;
-import com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence.jpa.repositories.NormativeThresholdRepository;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.NormativeThresholdRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

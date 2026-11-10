@@ -7,9 +7,11 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.A
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.MeasurementStatus;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementCommandService;
-import com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence.jpa.repositories.EnvironmentalAlertRepository;
-import com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence.jpa.repositories.EnvironmentalMeasurementRepository;
-import com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence.jpa.repositories.NormativeThresholdRepository;
+
+import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.EnvironmentalAlertRepository;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.EnvironmentalMeasurementRepository;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.NormativeThresholdRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
