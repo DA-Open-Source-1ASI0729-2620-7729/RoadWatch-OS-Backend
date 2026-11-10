@@ -66,4 +66,16 @@ public class EnvironmentalMeasurement extends AuditableAbstractPersistenceEntity
         this.registeredByUserId = command.registeredByUserId();
         this.observation = command.observation();
     }
+
+    public void markCompliant() {
+        this.status = MeasurementStatus.COMPLIANT;
+    }
+
+    public void markWarning() {
+        this.status = MeasurementStatus.WARNING;
+    }
+
+    public void markNonCompliant() {
+        this.status = MeasurementStatus.NON_COMPLIANT;
+    }
 }
