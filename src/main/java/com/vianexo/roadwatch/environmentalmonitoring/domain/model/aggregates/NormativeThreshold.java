@@ -59,13 +59,21 @@ public class NormativeThreshold extends AuditableAbstractPersistenceEntity {
     }
 
     public MeasurementStatus evaluate(BigDecimal value) {
-        if (value.compareTo(this.maxPermissibleLimit) >= 0) {
+        if (isExceeded(value)) {
             return MeasurementStatus.NON_COMPLIANT;
         }
-        if (value.compareTo(this.warningLimit) >= 0) {
+        if (isWarning(value)) {
             return MeasurementStatus.WARNING;
         }
         return MeasurementStatus.COMPLIANT;
+    }
+
+    public boolean isWarning(BigDecimal value) {
+        return value.compareTo(this.warningLimit) >= 0;
+    }
+
+    public boolean isExceeded(BigDecimal value) {
+        return value.compareTo(this.maxPermissibleLimit) >= 0;
     }
 
     private void validateLimits(BigDecimal warning, BigDecimal max) {
