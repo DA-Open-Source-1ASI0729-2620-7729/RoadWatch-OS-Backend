@@ -60,7 +60,7 @@ public class NormativeThreshold extends AuditableAbstractPersistenceEntity {
 
     public MeasurementStatus evaluate(BigDecimal value) {
         if (value.compareTo(this.maxPermissibleLimit) >= 0) {
-            return MeasurementStatus.CRITICAL;
+            return MeasurementStatus.NON_COMPLIANT;
         }
         if (value.compareTo(this.warningLimit) >= 0) {
             return MeasurementStatus.WARNING;

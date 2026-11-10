@@ -50,10 +50,10 @@ public class EnvironmentalMeasurementCommandServiceImpl implements Environmental
         var measurement = new EnvironmentalMeasurement(command, appliedLimit, status);
         var savedMeasurement = measurementRepository.save(measurement);
 
-        if (status == MeasurementStatus.WARNING || status == MeasurementStatus.CRITICAL) {
+        if (status == MeasurementStatus.WARNING || status == MeasurementStatus.NON_COMPLIANT) {
             AlertSeverity severity;
 
-            if (status == MeasurementStatus.CRITICAL) {
+            if (status == MeasurementStatus.NON_COMPLIANT) {
                 severity = AlertSeverity.CRITICAL;
             } else {
                 severity = AlertSeverity.HIGH;
