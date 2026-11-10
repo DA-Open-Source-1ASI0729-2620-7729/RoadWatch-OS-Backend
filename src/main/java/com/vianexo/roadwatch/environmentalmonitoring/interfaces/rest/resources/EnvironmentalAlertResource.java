@@ -19,5 +19,5 @@ public record EnvironmentalAlertResource(
         AlertStatus status,
         boolean acknowledged,
         String message,
-        LocalDateTime triggeredAt
+        LocalDateTime createdAt
 ) {}
