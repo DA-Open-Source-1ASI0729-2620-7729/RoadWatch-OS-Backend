@@ -1,5 +1,6 @@
 package com.vianexo.roadwatch.incidentmitigation.application.internal.commandservices;
 
+import com.vianexo.roadwatch.incidentmitigation.application.acl.EvidenceClient;
 import com.vianexo.roadwatch.incidentmitigation.domain.model.aggregates.EnvironmentalIncident;
 import com.vianexo.roadwatch.incidentmitigation.domain.model.commands.ChangeIncidentSeverityCommand;
 import com.vianexo.roadwatch.incidentmitigation.domain.model.commands.ChangeIncidentStatusCommand;
@@ -10,12 +11,14 @@ import com.vianexo.roadwatch.incidentmitigation.domain.model.valueobjects.Incide
 import com.vianexo.roadwatch.incidentmitigation.domain.repositories.EnvironmentalIncidentRepository;
 import com.vianexo.roadwatch.incidentmitigation.domain.repositories.IncidentStatusHistoryRepository;
 import com.vianexo.roadwatch.incidentmitigation.domain.services.EnvironmentalIncidentCommandService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,11 +26,20 @@ public class EnvironmentalIncidentCommandServiceImpl implements EnvironmentalInc
 
     private final EnvironmentalIncidentRepository incidentRepository;
     private final IncidentStatusHistoryRepository statusHistoryRepository;
+    private final Optional<EvidenceClient> evidenceClient;
+
+    @Autowired
+    public EnvironmentalIncidentCommandServiceImpl(EnvironmentalIncidentRepository incidentRepository,
+                                                   IncidentStatusHistoryRepository statusHistoryRepository,
+                                                   Optional<EvidenceClient> evidenceClient) {
+        this.incidentRepository = incidentRepository;
+        this.statusHistoryRepository = statusHistoryRepository;
+        this.evidenceClient = evidenceClient;
+    }
 
     public EnvironmentalIncidentCommandServiceImpl(EnvironmentalIncidentRepository incidentRepository,
                                                    IncidentStatusHistoryRepository statusHistoryRepository) {
-        this.incidentRepository = incidentRepository;
-        this.statusHistoryRepository = statusHistoryRepository;
+        this(incidentRepository, statusHistoryRepository, Optional.empty());
     }
 
     @Override
@@ -40,6 +52,9 @@ public class EnvironmentalIncidentCommandServiceImpl implements EnvironmentalInc
     @Override
     public EnvironmentalIncident handle(ChangeIncidentStatusCommand command) {
         var incident = findIncident(command.incidentId());
+        if (command.status() == IncidentStatus.CLOSED) {
+            requireEvidence(incident.getId());
+        }
         var previousStatus = incident.getStatus();
         incident.changeStatus(command.status());
         var saved = incidentRepository.save(incident);
@@ -74,5 +89,13 @@ public class EnvironmentalIncidentCommandServiceImpl implements EnvironmentalInc
     private EnvironmentalIncident findIncident(Long incidentId) {
         return incidentRepository.findById(incidentId)
                 .orElseThrow(() -> new NoSuchElementException("Incident not found: " + incidentId));
+    }
+
+    private void requireEvidence(Long incidentId) {
+        var client = evidenceClient.orElseThrow(() -> new IllegalStateException(
+                "Evidence client is not available"));
+        if (!client.hasEvidenceForIncident(incidentId)) {
+            throw new IllegalStateException("Evidence is required before closing an incident");
+        }
     }
 }
