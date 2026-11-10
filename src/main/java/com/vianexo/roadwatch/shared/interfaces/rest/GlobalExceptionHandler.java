@@ -1,6 +1,7 @@
 package com.vianexo.roadwatch.shared.interfaces.rest;
 
 import com.vianexo.roadwatch.shared.application.result.ApplicationError;
+import com.vianexo.roadwatch.shared.application.result.UnauthorizedException;
 import com.vianexo.roadwatch.shared.interfaces.rest.transform.ProblemDetailFromApplicationErrorAssembler;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,12 @@ public class GlobalExceptionHandler {
                 .orElse("Request validation failed");
         return ProblemDetailFromApplicationErrorAssembler.toResponseFromApplicationError(
                 ApplicationError.validationError("request-body", details));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ProblemDetail> handleUnauthorizedException(UnauthorizedException exception) {
+        return ProblemDetailFromApplicationErrorAssembler.toResponseFromApplicationError(
+                ApplicationError.authenticationError(exception.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)
