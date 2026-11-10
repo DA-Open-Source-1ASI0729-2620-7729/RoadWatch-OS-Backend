@@ -50,12 +50,16 @@ public class NormativeThreshold extends AuditableAbstractPersistenceEntity {
     }
 
     public void updateLimits(UpsertNormativeThresholdCommand command) {
-        validateLimits(command.warningLimit(), command.maximumLimit());
+        updateLimits(command.warningLimit(), command.maximumLimit());
         this.unit = command.unit();
-        this.warningLimit = command.warningLimit();
-        this.maximumLimit = command.maximumLimit();
         this.normativeReference = command.normativeReference();
         this.active = true;
+    }
+
+    public void updateLimits(BigDecimal warningLimit, BigDecimal maximumLimit) {
+        validateLimits(warningLimit, maximumLimit);
+        this.warningLimit = warningLimit;
+        this.maximumLimit = maximumLimit;
     }
 
     public MeasurementStatus evaluate(BigDecimal value) {
