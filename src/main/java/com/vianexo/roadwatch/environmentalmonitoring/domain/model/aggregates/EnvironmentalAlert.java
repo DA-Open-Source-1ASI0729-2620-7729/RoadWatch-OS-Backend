@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
-public class EnvironmentalAlert extends AuditableAbstractPersistenceEntity<EnvironmentalAlert> {
+public class EnvironmentalAlert extends AuditableAbstractPersistenceEntity {
 
     @Embedded
     private ProjectId projectId;

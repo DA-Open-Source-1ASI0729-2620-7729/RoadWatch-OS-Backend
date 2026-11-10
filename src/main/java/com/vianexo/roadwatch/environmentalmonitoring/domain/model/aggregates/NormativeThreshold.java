@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor
 @Entity
-public class NormativeThreshold extends AuditableAbstractPersistenceEntity<NormativeThreshold> {
+public class NormativeThreshold extends AuditableAbstractPersistenceEntity {
 
     @Embedded
     private ProjectId projectId;

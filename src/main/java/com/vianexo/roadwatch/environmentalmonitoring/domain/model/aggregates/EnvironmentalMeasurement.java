@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Entity
-public class EnvironmentalMeasurement extends AuditableAbstractPersistenceEntity<EnvironmentalMeasurement> {
+public class EnvironmentalMeasurement extends AuditableAbstractPersistenceEntity {
 
     @Embedded
     private ProjectId projectId;

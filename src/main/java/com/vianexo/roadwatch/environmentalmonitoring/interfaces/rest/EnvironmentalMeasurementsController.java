@@ -1,0 +1,89 @@
+package com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest;
+
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.*;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementCommandService;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementQueryService;
+import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.resources.EnvironmentalMeasurementResource;
+import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.resources.RegisterEnvironmentalMeasurementResource;
+import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.transform.EnvironmentalMeasurementResourceFromEntityAssembler;
+import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.transform.RegisterEnvironmentalMeasurementCommandFromResourceAssembler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(value = "/api/v1/environmental-measurements", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Environmental Measurements", description = "Environmental Measurement Management Endpoints")
+public class EnvironmentalMeasurementsController {
+
+    private final EnvironmentalMeasurementCommandService commandService;
+    private final EnvironmentalMeasurementQueryService queryService;
+
+    public EnvironmentalMeasurementsController(
+            EnvironmentalMeasurementCommandService commandService,
+            EnvironmentalMeasurementQueryService queryService
+    ) {
+        this.commandService = commandService;
+        this.queryService = queryService;
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Register a new environmental measurement")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Environmental measurement registered"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
+    public ResponseEntity<EnvironmentalMeasurementResource> registerMeasurement(
+            @RequestBody RegisterEnvironmentalMeasurementResource resource
+    ) {
+        var command = RegisterEnvironmentalMeasurementCommandFromResourceAssembler.toCommandFromResource(resource);
+        var measurement = commandService.handle(command);
+        if (measurement.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        var measurementResource = EnvironmentalMeasurementResourceFromEntityAssembler.toResourceFromEntity(measurement.get());
+        return new ResponseEntity<>(measurementResource, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    @Operation(summary = "Get environmental measurements with optional filters")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Measurements retrieved")
+    })
+    public ResponseEntity<List<EnvironmentalMeasurementResource>> getMeasurements(
+            @RequestParam(required = false) Long projectId,
+            @RequestParam(required = false) Long monitoringPointId
+    ) {
+        var measurements = (projectId != null)
+                ? queryService.handle(new GetEnvironmentalMeasurementsByProjectIdQuery(projectId))
+                : (monitoringPointId != null)
+                ? queryService.handle(new GetEnvironmentalMeasurementsByMonitoringPointIdQuery(monitoringPointId))
+                : queryService.handle(new GetAllEnvironmentalMeasurementsQuery());
+
+        var resources = measurements.stream()
+                .map(EnvironmentalMeasurementResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(resources);
+    }
+
+    @GetMapping("/{measurementId}")
+    @Operation(summary = "Get environmental measurement by ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Measurement found"),
+            @ApiResponse(responseCode = "404", description = "Measurement not found")
+    })
+    public ResponseEntity<EnvironmentalMeasurementResource> getMeasurementById(@PathVariable Long measurementId) {
+        var measurement = queryService.handle(new GetEnvironmentalMeasurementByIdQuery(measurementId));
+        return measurement
+                .map(EnvironmentalMeasurementResourceFromEntityAssembler::toResourceFromEntity)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+}
