@@ -8,7 +8,6 @@ Project Management owns `Project` and `MonitoringPoint`. Its REST API exposes pr
 - Assigning a responsible user checks that `responsibleUserId` is positive, but does not check that the user exists or belongs to the project account.
 - A monitoring point can store an optional positive `normativeThresholdId`, but does not check the referenced threshold in Environmental Monitoring.
 - Project locations are stored as text and monitoring point coordinates are stored as latitude and longitude. The backend does not call a geolocation service.
-- Project search matches names. The model has no project code, and cross-context search is outside this module.
 
 ## Agreements needed before further integration
 
@@ -24,10 +23,10 @@ Agree whether assignment must verify that the user exists, is active, and belong
 
 Agree whether a monitoring point may omit a threshold, whether a selected threshold must be active, and whether it must match the point's monitored variable. If validation is required, define a lookup by `normativeThresholdId`. The monitoring point stores only that ID.
 
-### Maps and global search
+### Maps
 
-Agree whether geolocation is a frontend concern or requires a backend adapter and which map service supplies it. For global search, agree on the owner of aggregation across bounded contexts and whether projects need a separate code. Project Management can supply its own project query without reading other contexts' repositories.
+Agree whether geolocation is a frontend concern or requires a backend adapter and which map service supplies it. Project Management must not call an external map provider until that contract is defined.
 
 ## Verification still needed
 
-Run the application against the team's MySQL database and verify project creation, monitoring point creation, the `monitoring_points.project_id` foreign key, paging, search, and `/swagger-ui/index.html`. The automated REST tests use mocked application services and do not exercise MySQL.
+Run the application against the team's MySQL database and verify project creation, monitoring point creation, the `monitoring_points.project_id` foreign key, project and monitoring point listings, and `/swagger-ui/index.html`. The automated REST tests use mocked application services and do not exercise MySQL.
