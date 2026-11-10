@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface EnvironmentalMeasurementQueryService {
     List<EnvironmentalMeasurement> handle(GetAllEnvironmentalMeasurementsQuery query);
     Optional<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementByIdQuery query);
-    List<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementsByProjectIdQuery query);
     List<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementsByMonitoringPointIdQuery query);
     List<EnvironmentalMeasurement> handle(GetEnvironmentalMeasurementsByDateRangeQuery query);
 }

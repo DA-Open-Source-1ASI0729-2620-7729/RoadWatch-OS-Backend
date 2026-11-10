@@ -2,7 +2,6 @@ package com.vianexo.roadwatch.environmentalmonitoring.application.internal.comma
 
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.NormativeThreshold;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.commands.UpsertNormativeThresholdCommand;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.NormativeThresholdCommandService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.NormativeThresholdRepository;
 import org.springframework.stereotype.Service;
@@ -20,9 +19,7 @@ public class NormativeThresholdCommandServiceImpl implements NormativeThresholdC
     @Override
     @Transactional
     public NormativeThreshold handle(UpsertNormativeThresholdCommand command) {
-        var existingThreshold = thresholdRepository.findByProjectIdAndIndicatorTypeAndActiveTrue(
-                new ProjectId(command.projectId()),
-                command.indicatorType());
+        var existingThreshold = thresholdRepository.findByIndicatorType(command.indicatorType());
 
         NormativeThreshold threshold;
         if (existingThreshold.isPresent()) {

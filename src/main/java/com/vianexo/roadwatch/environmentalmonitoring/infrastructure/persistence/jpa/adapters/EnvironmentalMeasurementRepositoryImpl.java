@@ -2,8 +2,6 @@ package com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence
 
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.EnvironmentalMeasurement;
 
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.MonitoringPointId;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.EnvironmentalMeasurementRepository;
 import com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence.jpa.repositories.EnvironmentalMeasurementJpaRepository;
 import org.springframework.stereotype.Repository;
@@ -37,18 +35,13 @@ public class EnvironmentalMeasurementRepositoryImpl implements EnvironmentalMeas
     }
 
     @Override
-    public List<EnvironmentalMeasurement> findAllByProjectIdOrderByMeasuredAtDesc(ProjectId projectId) {
-        return jpaRepository.findAllByProjectIdOrderByMeasuredAtDesc(projectId);
-    }
-
-    @Override
-    public List<EnvironmentalMeasurement> findAllByMonitoringPointIdOrderByMeasuredAtDesc(MonitoringPointId monitoringPointId) {
+    public List<EnvironmentalMeasurement> findAllByMonitoringPointIdOrderByMeasuredAtDesc(Long monitoringPointId) {
         return jpaRepository.findAllByMonitoringPointIdOrderByMeasuredAtDesc(monitoringPointId);
     }
 
     @Override
     public List<EnvironmentalMeasurement> findAllByMonitoringPointIdAndMeasuredAtBetweenOrderByMeasuredAtDesc(
-            MonitoringPointId monitoringPointId, LocalDateTime startDate, LocalDateTime endDate) {
+            Long monitoringPointId, LocalDateTime startDate, LocalDateTime endDate) {
         return jpaRepository.findAllByMonitoringPointIdAndMeasuredAtBetweenOrderByMeasuredAtDesc(
                 monitoringPointId, startDate, endDate);
     }

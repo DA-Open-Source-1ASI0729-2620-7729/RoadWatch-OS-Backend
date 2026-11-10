@@ -6,14 +6,10 @@ import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.resources.R
 public class RegisterEnvironmentalMeasurementCommandFromResourceAssembler {
     public static RegisterEnvironmentalMeasurementCommand toCommandFromResource(RegisterEnvironmentalMeasurementResource resource) {
         return new RegisterEnvironmentalMeasurementCommand(
-                resource.projectId(),
                 resource.monitoringPointId(),
                 resource.indicatorType(),
-                resource.measuredValue(),
-                resource.unit(),
-                resource.measuredAt(),
-                resource.registeredByUserId(),
-                resource.observation()
+                resource.value(),
+                resource.measuredAt()
         );
     }
 }

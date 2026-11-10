@@ -8,14 +8,9 @@ import java.time.LocalDateTime;
 
 public record EnvironmentalMeasurementResource(
         Long id,
-        Long projectId,
         Long monitoringPointId,
         IndicatorType indicatorType,
-        BigDecimal measuredValue,
-        BigDecimal thresholdApplied,
-        String unit,
-        MeasurementStatus status,
+        BigDecimal value,
         LocalDateTime measuredAt,
-        Long registeredByUserId,
-        String observation
+        MeasurementStatus status
 ) {}

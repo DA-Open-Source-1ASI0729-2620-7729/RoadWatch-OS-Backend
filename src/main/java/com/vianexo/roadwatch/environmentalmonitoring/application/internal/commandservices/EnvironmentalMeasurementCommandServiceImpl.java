@@ -3,9 +3,7 @@ package com.vianexo.roadwatch.environmentalmonitoring.application.internal.comma
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.EnvironmentalAlert;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.EnvironmentalMeasurement;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.commands.RegisterEnvironmentalMeasurementCommand;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.AlertSeverity;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.MeasurementStatus;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementCommandService;
 
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.EnvironmentalAlertRepository;
@@ -15,7 +13,6 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.Normati
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 @Service
 public class EnvironmentalMeasurementCommandServiceImpl implements EnvironmentalMeasurementCommandService {
 
@@ -36,37 +33,23 @@ public class EnvironmentalMeasurementCommandServiceImpl implements Environmental
     @Override
     @Transactional
     public EnvironmentalMeasurement handle(RegisterEnvironmentalMeasurementCommand command) {
-        var threshold = thresholdRepository.findByProjectIdAndIndicatorTypeAndActiveTrue(
-                new ProjectId(command.projectId()),
-                command.indicatorType());
-        BigDecimal appliedLimit = BigDecimal.ZERO;
+        var threshold = thresholdRepository.findByIndicatorType(command.indicatorType());
         MeasurementStatus status = MeasurementStatus.COMPLIANT;
 
         if (threshold.isPresent()) {
-            appliedLimit = threshold.get().getMaximumLimit();
-            status = threshold.get().evaluate(command.measuredValue());
+            if (threshold.get().isExceeded(command.value())) {
+                status = MeasurementStatus.NON_COMPLIANT;
+            } else if (threshold.get().isWarning(command.value())) {
+                status = MeasurementStatus.WARNING;
+            }
         }
 
-        var measurement = new EnvironmentalMeasurement(command, appliedLimit, status);
+        var measurement = new EnvironmentalMeasurement(command, status);
         var savedMeasurement = measurementRepository.save(measurement);
 
         if (status == MeasurementStatus.WARNING || status == MeasurementStatus.NON_COMPLIANT) {
-            AlertSeverity severity;
-
-            if (status == MeasurementStatus.NON_COMPLIANT) {
-                severity = AlertSeverity.CRITICAL;
-            } else {
-                severity = AlertSeverity.HIGH;
-            }
-
             var alert = new EnvironmentalAlert(
-                    command.projectId(),
-                    command.monitoringPointId(),
                     savedMeasurement.getId(),
-                    command.indicatorType(),
-                    command.measuredValue(),
-                    appliedLimit,
-                    severity,
                     "Environmental threshold exceeded");
             alertRepository.save(alert);
         }

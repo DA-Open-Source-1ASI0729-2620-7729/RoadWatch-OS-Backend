@@ -7,13 +7,10 @@ public class NormativeThresholdResourceFromEntityAssembler {
     public static NormativeThresholdResource toResourceFromEntity(NormativeThreshold entity) {
         return new NormativeThresholdResource(
                 entity.getId(),
-                entity.getProjectId().projectId(),
                 entity.getIndicatorType(),
                 entity.getUnit(),
                 entity.getWarningLimit(),
-                entity.getMaximumLimit(),
-                entity.getNormativeReference(),
-                entity.isActive()
+                entity.getMaximumLimit()
         );
     }
 }

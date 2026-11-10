@@ -1,6 +1,5 @@
 package com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence.jpa.adapters;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.EnvironmentalAlert; 
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.EnvironmentalAlertRepository;
 import com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence.jpa.repositories.EnvironmentalAlertJpaRepository; 
 import org.springframework.stereotype.Repository;
@@ -34,12 +33,7 @@ public class EnvironmentalAlertRepositoryImpl implements EnvironmentalAlertRepos
     }
 
     @Override
-    public List<EnvironmentalAlert> findTop10ByOrderByTriggeredAtDesc() {
-        return jpaRepository.findTop10ByOrderByTriggeredAtDesc();
-    }
-
-    @Override
-    public List<EnvironmentalAlert> findAllByProjectIdOrderByTriggeredAtDesc(ProjectId projectId) {
-        return jpaRepository.findAllByProjectIdOrderByTriggeredAtDesc(projectId);
+    public List<EnvironmentalAlert> findTop10ByOrderByCreatedAtDesc() {
+        return jpaRepository.findTop10ByOrderByCreatedAtDesc();
     }
 }

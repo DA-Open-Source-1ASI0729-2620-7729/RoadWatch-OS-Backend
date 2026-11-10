@@ -1,8 +1,7 @@
 package com.vianexo.roadwatch.environmentalmonitoring.application.internal.queryservices;
 
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.NormativeThreshold;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetNormativeThresholdsByProjectIdQuery;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAllNormativeThresholdsQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.NormativeThresholdQueryService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.NormativeThresholdRepository;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ public class NormativeThresholdQueryServiceImpl implements NormativeThresholdQue
     }
 
     @Override
-    public List<NormativeThreshold> handle(GetNormativeThresholdsByProjectIdQuery query) {
-        return thresholdRepository.findAllByProjectIdAndActiveTrue(new ProjectId(query.projectId()));
+    public List<NormativeThreshold> handle(GetAllNormativeThresholdsQuery query) {
+        return thresholdRepository.findAll();
     }
 }

@@ -3,7 +3,6 @@ package com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAllEnvironmentalMeasurementsQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementByIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByMonitoringPointIdQuery;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByProjectIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalMeasurementsByDateRangeQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementCommandService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalMeasurementQueryService;
@@ -67,7 +66,6 @@ public class EnvironmentalMeasurementsController {
             @ApiResponse(responseCode = "200", description = "Measurements retrieved")
     })
     public ResponseEntity<List<EnvironmentalMeasurementResource>> getMeasurements(
-            @RequestParam(required = false) Long projectId,
             @RequestParam(required = false) Long monitoringPointId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
@@ -82,8 +80,6 @@ public class EnvironmentalMeasurementsController {
         if (monitoringPointId != null && startDate != null && endDate != null) {
             measurements = queryService.handle(new GetEnvironmentalMeasurementsByDateRangeQuery(
                     monitoringPointId, startDate, endDate));
-        } else if (projectId != null) {
-            measurements = queryService.handle(new GetEnvironmentalMeasurementsByProjectIdQuery(projectId));
         } else if (monitoringPointId != null) {
             measurements = queryService.handle(
                     new GetEnvironmentalMeasurementsByMonitoringPointIdQuery(monitoringPointId));

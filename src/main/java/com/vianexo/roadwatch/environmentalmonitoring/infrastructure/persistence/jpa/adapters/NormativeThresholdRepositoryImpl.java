@@ -2,7 +2,6 @@ package com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence
 
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.NormativeThreshold;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.IndicatorType;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.NormativeThresholdRepository;
 import com.vianexo.roadwatch.environmentalmonitoring.infrastructure.persistence.jpa.repositories.NormativeThresholdJpaRepository;
 import org.springframework.stereotype.Repository;
@@ -25,12 +24,12 @@ public class NormativeThresholdRepositoryImpl implements NormativeThresholdRepos
     }
 
     @Override
-    public List<NormativeThreshold> findAllByProjectIdAndActiveTrue(ProjectId projectId) {
-        return jpaRepository.findAllByProjectIdAndActiveTrue(projectId);
+    public List<NormativeThreshold> findAll() {
+        return jpaRepository.findAll();
     }
 
     @Override
-    public Optional<NormativeThreshold> findByProjectIdAndIndicatorTypeAndActiveTrue(ProjectId projectId, IndicatorType indicatorType) {
-        return jpaRepository.findByProjectIdAndIndicatorTypeAndActiveTrue(projectId, indicatorType);
+    public Optional<NormativeThreshold> findByIndicatorType(IndicatorType indicatorType) {
+        return jpaRepository.findByIndicatorType(indicatorType);
     }
 }

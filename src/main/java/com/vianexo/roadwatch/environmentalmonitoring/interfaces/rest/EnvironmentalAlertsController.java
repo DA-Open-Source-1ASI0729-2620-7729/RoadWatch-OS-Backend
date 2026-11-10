@@ -1,9 +1,7 @@
 package com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest;
 
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.commands.AcknowledgeEnvironmentalAlertCommand;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.commands.ResolveEnvironmentalAlertCommand;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAllEnvironmentalAlertsQuery;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalAlertsByProjectIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetRecentEnvironmentalAlertsQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalAlertCommandService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalAlertQueryService;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -41,18 +38,12 @@ public class EnvironmentalAlertsController {
     }
 
     @GetMapping
-    @Operation(summary = "Get environmental alerts with optional projectId filter")
+    @Operation(summary = "Get environmental alerts")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Environmental alerts retrieved")
     })
-    public ResponseEntity<List<EnvironmentalAlertResource>> getAlerts(
-            @RequestParam(required = false) Long projectId
-    ) {
+    public ResponseEntity<List<EnvironmentalAlertResource>> getAlerts() {
         var alerts = queryService.handle(new GetAllEnvironmentalAlertsQuery());
-
-        if (projectId != null) {
-            alerts = queryService.handle(new GetEnvironmentalAlertsByProjectIdQuery(projectId));
-        }
 
         var resources = alerts.stream()
                 .map(EnvironmentalAlertResourceFromEntityAssembler::toResourceFromEntity)
@@ -89,19 +80,4 @@ public class EnvironmentalAlertsController {
         return ResponseEntity.ok(resource);
     }
 
-    @PatchMapping("/{alertId}/resolutions")
-    @Operation(summary = "Resolve an environmental alert")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Alert resolved"),
-            @ApiResponse(responseCode = "404", description = "Alert not found")
-    })
-    public ResponseEntity<EnvironmentalAlertResource> resolveAlert(@PathVariable Long alertId) {
-        var updated = commandService.handle(new ResolveEnvironmentalAlertCommand(alertId));
-        if (updated.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        var resource = EnvironmentalAlertResourceFromEntityAssembler.toResourceFromEntity(updated.get());
-        return ResponseEntity.ok(resource);
-    }
 }

@@ -6,11 +6,8 @@ import java.math.BigDecimal;
 
 public record NormativeThresholdResource(
         Long id,
-        Long projectId,
         IndicatorType indicatorType,
         String unit,
         BigDecimal warningLimit,
-        BigDecimal maximumLimit,
-        String normativeReference,
-        boolean active
+        BigDecimal maximumLimit
 ) {}

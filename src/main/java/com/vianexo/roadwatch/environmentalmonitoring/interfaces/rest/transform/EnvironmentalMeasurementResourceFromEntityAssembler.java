@@ -7,16 +7,11 @@ public class EnvironmentalMeasurementResourceFromEntityAssembler {
     public static EnvironmentalMeasurementResource toResourceFromEntity(EnvironmentalMeasurement entity) {
         return new EnvironmentalMeasurementResource(
                 entity.getId(),
-                entity.getProjectId().projectId(),
-                entity.getMonitoringPointId().monitoringPointId(),
+                entity.getMonitoringPointId(),
                 entity.getIndicatorType(),
-                entity.getMeasuredValue(),
-                entity.getThresholdApplied(),
-                entity.getUnit(),
-                entity.getStatus(),
+                entity.getValue(),
                 entity.getMeasuredAt(),
-                entity.getRegisteredByUserId(),
-                entity.getObservation()
+                entity.getStatus()
         );
     }
 }

@@ -2,9 +2,7 @@ package com.vianexo.roadwatch.environmentalmonitoring.application.internal.query
 
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.EnvironmentalAlert;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAllEnvironmentalAlertsQuery;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalAlertsByProjectIdQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetRecentEnvironmentalAlertsQuery;
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.ProjectId;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalAlertQueryService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.EnvironmentalAlertRepository;
 import org.springframework.stereotype.Service;
@@ -27,11 +25,6 @@ public class EnvironmentalAlertQueryServiceImpl implements EnvironmentalAlertQue
 
     @Override
     public List<EnvironmentalAlert> handle(GetRecentEnvironmentalAlertsQuery query) {
-        return alertRepository.findTop10ByOrderByTriggeredAtDesc();
-    }
-
-    @Override
-    public List<EnvironmentalAlert> handle(GetEnvironmentalAlertsByProjectIdQuery query) {
-        return alertRepository.findAllByProjectIdOrderByTriggeredAtDesc(new ProjectId(query.projectId()));
+        return alertRepository.findTop10ByOrderByCreatedAtDesc();
     }
 }

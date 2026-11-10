@@ -1,6 +1,6 @@
 package com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest;
 
-import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetNormativeThresholdsByProjectIdQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAllNormativeThresholdsQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.NormativeThresholdCommandService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.NormativeThresholdQueryService;
 import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.resources.NormativeThresholdResource;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -55,12 +54,12 @@ public class NormativeThresholdsController {
     }
 
     @GetMapping
-    @Operation(summary = "Get active normative thresholds by project ID")
+    @Operation(summary = "Get normative thresholds")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Normative thresholds retrieved")
     })
-    public ResponseEntity<List<NormativeThresholdResource>> getThresholdsByProject(@RequestParam Long projectId) {
-        var thresholds = queryService.handle(new GetNormativeThresholdsByProjectIdQuery(projectId));
+    public ResponseEntity<List<NormativeThresholdResource>> getThresholds() {
+        var thresholds = queryService.handle(new GetAllNormativeThresholdsQuery());
         var resources = thresholds.stream()
                 .map(NormativeThresholdResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();

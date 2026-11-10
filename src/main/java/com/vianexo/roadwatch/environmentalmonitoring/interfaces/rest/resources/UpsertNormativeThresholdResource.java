@@ -5,10 +5,8 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.model.valueobjects.I
 import java.math.BigDecimal;
 
 public record UpsertNormativeThresholdResource(
-        Long projectId,
         IndicatorType indicatorType,
         String unit,
         BigDecimal warningLimit,
-        BigDecimal maximumLimit,
-        String normativeReference
+        BigDecimal maximumLimit
 ) {}
