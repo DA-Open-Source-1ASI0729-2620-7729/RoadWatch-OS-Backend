@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,13 @@ public class UserController {
     @GetMapping(params = "email")
     public ResponseEntity<UserResource> getUserByEmail(@RequestParam String email) {
         return ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFrom(userService.findByEmail(email)));
+    }
+
+    @Operation(summary = "Deactivate user")
+    @PatchMapping("/{userId}/deactivation")
+    public ResponseEntity<Void> deactivateUser(@PathVariable Long userId) {
+        userService.deactivateUser(userId);
+        return ResponseEntity.noContent().build();
     }
 
 }
