@@ -41,6 +41,9 @@ public class EnvironmentalAlert extends AuditableAbstractPersistenceEntity {
     @Column(nullable = false, length = 30)
     private AlertStatus status;
 
+    @Column(nullable = false)
+    private boolean acknowledged;
+
     @Column(nullable = false, length = 300)
     private String message;
 
@@ -65,6 +68,7 @@ public class EnvironmentalAlert extends AuditableAbstractPersistenceEntity {
         this.thresholdLimit = thresholdLimit;
         this.severity = severity;
         this.status = AlertStatus.OPEN;
+        this.acknowledged = false;
         this.message = message;
         this.triggeredAt = LocalDateTime.now();
     }
@@ -74,6 +78,7 @@ public class EnvironmentalAlert extends AuditableAbstractPersistenceEntity {
             throw new IllegalStateException("Cannot acknowledge an already resolved alert");
         }
         this.status = AlertStatus.ACKNOWLEDGED;
+        this.acknowledged = true;
     }
 
     public void resolve() {
