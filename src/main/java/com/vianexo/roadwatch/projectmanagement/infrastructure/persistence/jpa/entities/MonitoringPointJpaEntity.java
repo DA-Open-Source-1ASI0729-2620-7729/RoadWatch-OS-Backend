@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "monitoring_point")
+@Table(name = "monitoring_points")
 public class MonitoringPointJpaEntity {
 
     @Id

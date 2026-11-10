@@ -9,7 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "project")
+@Table(name = "projects")
 public class ProjectJpaEntity extends AuditableAbstractPersistenceEntity {
 
     @Column(nullable = false)
