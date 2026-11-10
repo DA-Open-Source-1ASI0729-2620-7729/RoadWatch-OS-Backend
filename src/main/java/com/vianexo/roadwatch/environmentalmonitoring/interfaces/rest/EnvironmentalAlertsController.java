@@ -4,6 +4,7 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.model.commands.Ackno
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.commands.ResolveEnvironmentalAlertCommand;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetAllEnvironmentalAlertsQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetEnvironmentalAlertsByProjectIdQuery;
+import com.vianexo.roadwatch.environmentalmonitoring.domain.model.queries.GetRecentEnvironmentalAlertsQuery;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalAlertCommandService;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.services.EnvironmentalAlertQueryService;
 import com.vianexo.roadwatch.environmentalmonitoring.interfaces.rest.resources.EnvironmentalAlertResource;
@@ -53,6 +54,19 @@ public class EnvironmentalAlertsController {
             alerts = queryService.handle(new GetEnvironmentalAlertsByProjectIdQuery(projectId));
         }
 
+        var resources = alerts.stream()
+                .map(EnvironmentalAlertResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
+        return ResponseEntity.ok(resources);
+    }
+
+    @GetMapping("/recent")
+    @Operation(summary = "Get recent environmental alerts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Recent environmental alerts retrieved")
+    })
+    public ResponseEntity<List<EnvironmentalAlertResource>> getRecentAlerts() {
+        var alerts = queryService.handle(new GetRecentEnvironmentalAlertsQuery());
         var resources = alerts.stream()
                 .map(EnvironmentalAlertResourceFromEntityAssembler::toResourceFromEntity)
                 .toList();

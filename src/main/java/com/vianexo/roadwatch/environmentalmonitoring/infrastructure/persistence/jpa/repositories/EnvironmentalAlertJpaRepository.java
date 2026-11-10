@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface EnvironmentalAlertJpaRepository extends JpaRepository<EnvironmentalAlert, Long> {
+    List<EnvironmentalAlert> findTop10ByOrderByTriggeredAtDesc();
     List<EnvironmentalAlert> findAllByProjectIdOrderByTriggeredAtDesc(ProjectId projectId);
 }

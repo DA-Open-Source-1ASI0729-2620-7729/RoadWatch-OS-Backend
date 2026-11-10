@@ -9,5 +9,6 @@ public interface EnvironmentalAlertRepository {
     EnvironmentalAlert save(EnvironmentalAlert alert);
     Optional<EnvironmentalAlert> findById(Long id);
     List<EnvironmentalAlert> findAll();
+    List<EnvironmentalAlert> findTop10ByOrderByTriggeredAtDesc();
     List<EnvironmentalAlert> findAllByProjectIdOrderByTriggeredAtDesc(ProjectId projectId);
 }
