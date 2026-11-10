@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @Getter
 @Entity
+@Table(name = "users")
 @NoArgsConstructor
 public class User extends AuditableAbstractPersistenceEntity {
 

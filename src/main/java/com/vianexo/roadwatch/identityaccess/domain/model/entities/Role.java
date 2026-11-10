@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import java.util.Set;
 
 @Getter
 @Entity
+@Table(name = "roles")
 @NoArgsConstructor
 public class Role extends AuditableAbstractPersistenceEntity {
 
