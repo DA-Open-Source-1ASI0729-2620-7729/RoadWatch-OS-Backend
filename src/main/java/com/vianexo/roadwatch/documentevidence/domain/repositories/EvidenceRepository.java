@@ -12,4 +12,10 @@ public interface EvidenceRepository {
     List<Evidence> findAll();
 
     Optional<Evidence> findById(Long id);
+
+    List<Evidence> findByIncidentId(Long incidentId);
+
+    List<Evidence> findByMeasurementId(Long measurementId);
+
+    boolean hasEvidenceForIncident(Long incidentId);
 }

@@ -24,6 +24,18 @@ public class EvidenceService {
         return evidenceRepository.findById(id);
     }
 
+    public List<Evidence> findByIncident(Long incidentId) {
+        return evidenceRepository.findByIncidentId(incidentId);
+    }
+
+    public List<Evidence> findByMeasurement(Long measurementId) {
+        return evidenceRepository.findByMeasurementId(measurementId);
+    }
+
+    public boolean hasEvidenceForIncident(Long incidentId) {
+        return evidenceRepository.hasEvidenceForIncident(incidentId);
+    }
+
     public Evidence create(Long incidentId, Long measurementId, String fileName, String fileType,
                            String storedFileName, Long uploadedByUserId) {
         return evidenceRepository.save(new Evidence(
