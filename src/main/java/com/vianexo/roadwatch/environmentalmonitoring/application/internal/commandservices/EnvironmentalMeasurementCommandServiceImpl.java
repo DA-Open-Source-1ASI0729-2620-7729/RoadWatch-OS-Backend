@@ -43,7 +43,7 @@ public class EnvironmentalMeasurementCommandServiceImpl implements Environmental
         MeasurementStatus status = MeasurementStatus.COMPLIANT;
 
         if (threshold.isPresent()) {
-            appliedLimit = threshold.get().getMaxPermissibleLimit();
+            appliedLimit = threshold.get().getMaximumLimit();
             status = threshold.get().evaluate(command.measuredValue());
         }
 

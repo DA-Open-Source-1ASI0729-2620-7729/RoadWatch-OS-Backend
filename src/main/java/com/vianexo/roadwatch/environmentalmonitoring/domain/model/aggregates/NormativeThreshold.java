@@ -30,7 +30,7 @@ public class NormativeThreshold extends AuditableAbstractPersistenceEntity {
     private BigDecimal warningLimit;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal maxPermissibleLimit;
+    private BigDecimal maximumLimit;
 
     @Column(nullable = false, length = 120)
     private String normativeReference;
@@ -39,21 +39,21 @@ public class NormativeThreshold extends AuditableAbstractPersistenceEntity {
     private boolean active;
 
     public NormativeThreshold(UpsertNormativeThresholdCommand command) {
-        validateLimits(command.warningLimit(), command.maxPermissibleLimit());
+        validateLimits(command.warningLimit(), command.maximumLimit());
         this.projectId = new ProjectId(command.projectId());
         this.indicatorType = command.indicatorType();
         this.unit = command.unit();
         this.warningLimit = command.warningLimit();
-        this.maxPermissibleLimit = command.maxPermissibleLimit();
+        this.maximumLimit = command.maximumLimit();
         this.normativeReference = command.normativeReference();
         this.active = true;
     }
 
     public void updateLimits(UpsertNormativeThresholdCommand command) {
-        validateLimits(command.warningLimit(), command.maxPermissibleLimit());
+        validateLimits(command.warningLimit(), command.maximumLimit());
         this.unit = command.unit();
         this.warningLimit = command.warningLimit();
-        this.maxPermissibleLimit = command.maxPermissibleLimit();
+        this.maximumLimit = command.maximumLimit();
         this.normativeReference = command.normativeReference();
         this.active = true;
     }
@@ -73,7 +73,7 @@ public class NormativeThreshold extends AuditableAbstractPersistenceEntity {
     }
 
     public boolean isExceeded(BigDecimal value) {
-        return value.compareTo(this.maxPermissibleLimit) >= 0;
+        return value.compareTo(this.maximumLimit) >= 0;
     }
 
     private void validateLimits(BigDecimal warning, BigDecimal max) {

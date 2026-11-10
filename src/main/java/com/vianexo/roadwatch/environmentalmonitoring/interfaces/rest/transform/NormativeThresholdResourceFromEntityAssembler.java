@@ -11,7 +11,7 @@ public class NormativeThresholdResourceFromEntityAssembler {
                 entity.getIndicatorType(),
                 entity.getUnit(),
                 entity.getWarningLimit(),
-                entity.getMaxPermissibleLimit(),
+                entity.getMaximumLimit(),
                 entity.getNormativeReference(),
                 entity.isActive()
         );

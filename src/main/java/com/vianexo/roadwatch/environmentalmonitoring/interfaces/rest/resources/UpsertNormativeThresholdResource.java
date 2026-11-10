@@ -9,6 +9,6 @@ public record UpsertNormativeThresholdResource(
         IndicatorType indicatorType,
         String unit,
         BigDecimal warningLimit,
-        BigDecimal maxPermissibleLimit,
+        BigDecimal maximumLimit,
         String normativeReference
 ) {}

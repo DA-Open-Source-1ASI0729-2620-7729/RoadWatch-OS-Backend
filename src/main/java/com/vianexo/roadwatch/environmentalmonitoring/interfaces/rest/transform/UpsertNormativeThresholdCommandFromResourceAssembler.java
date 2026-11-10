@@ -10,7 +10,7 @@ public class UpsertNormativeThresholdCommandFromResourceAssembler {
                 resource.indicatorType(),
                 resource.unit(),
                 resource.warningLimit(),
-                resource.maxPermissibleLimit(),
+                resource.maximumLimit(),
                 resource.normativeReference()
         );
     }

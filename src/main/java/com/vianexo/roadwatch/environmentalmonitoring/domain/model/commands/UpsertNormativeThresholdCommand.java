@@ -9,7 +9,7 @@ public record UpsertNormativeThresholdCommand(
         IndicatorType indicatorType,
         String unit,
         BigDecimal warningLimit,
-        BigDecimal maxPermissibleLimit,
+        BigDecimal maximumLimit,
         String normativeReference
 ) {
     public UpsertNormativeThresholdCommand {
