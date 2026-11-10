@@ -3,7 +3,6 @@ package com.vianexo.roadwatch.projectmanagement.interfaces;
 import com.vianexo.roadwatch.projectmanagement.application.commandservices.MonitoringPointCommandService;
 import com.vianexo.roadwatch.projectmanagement.application.queryservices.MonitoringPointQueryService;
 import com.vianexo.roadwatch.projectmanagement.domain.model.entities.MonitoringPoint;
-import com.vianexo.roadwatch.projectmanagement.domain.repositories.PageResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,15 +57,13 @@ class MonitoringPointRestTest {
     }
 
     @Test
-    void listReturnsPageMetadata() throws Exception {
+    void listReturnsMonitoringPoints() throws Exception {
         var point = new MonitoringPoint(7L, 1L, "Air", -12.1, -77.0, null, true);
-        when(queryService.getPointsByProjectId(1L, 0, 10))
-                .thenReturn(new PageResult<>(List.of(point), 0, 10, 1, 1));
+        when(queryService.getPointsByProjectId(1L)).thenReturn(List.of(point));
 
-        mvc().perform(get("/api/v1/projects/1/monitoring-points?page=0&size=10"))
+        mvc().perform(get("/api/v1/projects/1/monitoring-points"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value(7))
-                .andExpect(jsonPath("$.totalElements").value(1));
+                .andExpect(jsonPath("$[0].id").value(7));
     }
 
     @Test

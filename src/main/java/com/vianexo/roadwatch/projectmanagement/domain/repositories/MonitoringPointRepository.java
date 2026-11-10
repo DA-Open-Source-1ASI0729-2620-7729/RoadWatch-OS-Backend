@@ -13,5 +13,4 @@ public interface MonitoringPointRepository {
 
     List<MonitoringPoint> findByProjectId(Long projectId);
 
-    PageResult<MonitoringPoint> findByProjectId(Long projectId, int page, int size);
 }

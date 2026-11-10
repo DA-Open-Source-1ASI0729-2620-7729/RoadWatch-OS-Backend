@@ -6,7 +6,6 @@ import com.vianexo.roadwatch.projectmanagement.interfaces.rest.resources.CreateM
 import com.vianexo.roadwatch.projectmanagement.interfaces.rest.resources.MonitoringPointResource;
 import com.vianexo.roadwatch.projectmanagement.interfaces.rest.resources.UpdateMonitoringPointResource;
 import com.vianexo.roadwatch.projectmanagement.interfaces.rest.transform.MonitoringPointResourceFromEntityAssembler;
-import com.vianexo.roadwatch.projectmanagement.domain.repositories.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,10 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/projects/{projectId}/monitoring-points")
@@ -58,10 +57,10 @@ public class MonitoringPointController {
     @ApiResponse(responseCode = "200", description = "Monitoring points returned")
     @ApiResponse(responseCode = "400", description = "Invalid project ID")
     @ApiResponse(responseCode = "404", description = "Project not found")
-    public PageResult<MonitoringPointResource> getPointsByProject(@PathVariable Long projectId,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
-        return queryService.getPointsByProjectId(projectId, page, size)
-                .map(MonitoringPointResourceFromEntityAssembler::toResourceFromEntity);
+    public List<MonitoringPointResource> getPointsByProject(@PathVariable Long projectId) {
+        return queryService.getPointsByProjectId(projectId).stream()
+                .map(MonitoringPointResourceFromEntityAssembler::toResourceFromEntity)
+                .toList();
     }
 
     @GetMapping("/{pointId}")
