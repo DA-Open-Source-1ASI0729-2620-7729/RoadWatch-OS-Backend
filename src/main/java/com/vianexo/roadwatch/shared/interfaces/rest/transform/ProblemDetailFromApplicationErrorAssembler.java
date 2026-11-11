@@ -13,9 +13,11 @@ public final class ProblemDetailFromApplicationErrorAssembler {
     }
 
     public static ResponseEntity<ProblemDetail> toResponseFromApplicationError(ApplicationError error) {
-        var status = "VALIDATION_ERROR".equals(error.code())
-                ? HttpStatus.BAD_REQUEST
-                : HttpStatus.INTERNAL_SERVER_ERROR;
+        var status = switch (error.code()) {
+            case "VALIDATION_ERROR" -> HttpStatus.BAD_REQUEST;
+            case "AUTHENTICATION_ERROR" -> HttpStatus.UNAUTHORIZED;
+            default -> HttpStatus.INTERNAL_SERVER_ERROR;
+        };
         var problemDetail = ProblemDetail.forStatusAndDetail(status, error.message());
         problemDetail.setType(URI.create("/api/v1/errors/" + error.code().toLowerCase().replace('_', '-')));
         problemDetail.setProperty("code", error.code());

@@ -9,4 +9,8 @@ public record ApplicationError(String code, String message, String details) {
     public static ApplicationError unexpected(String context, String reason) {
         return new ApplicationError("UNEXPECTED_ERROR", "Unexpected error in %s".formatted(context), reason);
     }
+
+    public static ApplicationError authenticationError(String reason) {
+        return new ApplicationError("AUTHENTICATION_ERROR", "Authentication failed", reason);
+    }
 }
