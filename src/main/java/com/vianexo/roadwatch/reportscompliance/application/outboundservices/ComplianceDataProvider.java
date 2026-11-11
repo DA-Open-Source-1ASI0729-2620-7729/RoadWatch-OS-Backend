@@ -10,5 +10,9 @@ public interface ComplianceDataProvider {
 
     int countCriticalIncidents(Long projectId);
 
-    Double averageResolutionHours();
+    Double averageResolutionHours(Long projectId);
+
+    int countCompliantMeasurements(Long projectId);
+
+    int countNonCompliantMeasurements(Long projectId);
 }

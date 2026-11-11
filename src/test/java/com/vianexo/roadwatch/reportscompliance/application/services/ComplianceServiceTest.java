@@ -16,19 +16,24 @@ import static org.mockito.Mockito.when;
 class ComplianceServiceTest {
 
     private final ComplianceSummaryRepository summaryRepository = mock(ComplianceSummaryRepository.class);
+    private final ComplianceDataProvider dataProvider = mock(ComplianceDataProvider.class);
     private final ComplianceService complianceService = new ComplianceService(
-            mock(DocumentEvidenceContextFacade.class), mock(ComplianceDataProvider.class), summaryRepository);
+            mock(DocumentEvidenceContextFacade.class), dataProvider, summaryRepository);
 
     @Test
     void recalculatesComplianceSummary() {
         var summary = new ComplianceSummary(10L);
         when(summaryRepository.findByProjectId(10L)).thenReturn(Optional.of(summary));
         when(summaryRepository.save(summary)).thenReturn(summary);
+        when(dataProvider.countCompliantMeasurements(10L)).thenReturn(8);
+        when(dataProvider.countNonCompliantMeasurements(10L)).thenReturn(2);
 
         var result = complianceService.recalculateCompliance(10L);
 
         assertEquals(10L, result.getProjectId());
-        assertEquals(0.0, result.getCompliancePercentage());
+        assertEquals(80.0, result.getCompliancePercentage());
+        assertEquals(8, result.getCompliantMeasurements());
+        assertEquals(2, result.getNonCompliantMeasurements());
         assertNotNull(result.getCalculatedAt());
     }
 

@@ -27,7 +27,8 @@ public class ComplianceService {
     public ComplianceSummary recalculateCompliance(Long projectId) {
         var summary = summaryRepository.findByProjectId(projectId)
                 .orElseGet(() -> new ComplianceSummary(projectId));
-        summary.recalculate(0, 0);
+        summary.recalculate(dataProvider.countCompliantMeasurements(projectId),
+                dataProvider.countNonCompliantMeasurements(projectId));
         return summaryRepository.save(summary);
     }
 
