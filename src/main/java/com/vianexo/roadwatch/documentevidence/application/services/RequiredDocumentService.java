@@ -20,9 +20,13 @@ public class RequiredDocumentService {
         return requiredDocumentRepository.findAll();
     }
 
-    public RequiredDocument create(Long projectId, String milestoneName, String documentName,
-                                   boolean mandatory, LocalDate dueDate) {
+    public RequiredDocument defineRequirement(Long projectId, String milestoneName, String documentName,
+                                              boolean mandatory, LocalDate dueDate) {
         return requiredDocumentRepository.save(
                 new RequiredDocument(projectId, milestoneName, documentName, mandatory, dueDate));
+    }
+
+    public boolean validateMilestone(Long projectId, String milestoneName) {
+        return !requiredDocumentRepository.findByProjectIdAndMilestoneName(projectId, milestoneName).isEmpty();
     }
 }

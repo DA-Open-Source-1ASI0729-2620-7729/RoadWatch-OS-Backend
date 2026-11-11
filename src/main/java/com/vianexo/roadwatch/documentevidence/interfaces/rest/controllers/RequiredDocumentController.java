@@ -36,7 +36,7 @@ public class RequiredDocumentController {
     @PostMapping
     public ResponseEntity<RequiredDocumentResource> createRequiredDocument(
             @Valid @RequestBody CreateRequiredDocumentResource resource) {
-        var document = requiredDocumentService.create(
+        var document = requiredDocumentService.defineRequirement(
                 resource.projectId(),
                 resource.milestoneName(),
                 resource.documentName(),

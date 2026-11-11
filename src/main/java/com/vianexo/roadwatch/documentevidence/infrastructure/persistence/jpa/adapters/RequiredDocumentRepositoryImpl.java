@@ -25,4 +25,9 @@ public class RequiredDocumentRepositoryImpl implements RequiredDocumentRepositor
     public List<RequiredDocument> findAll() {
         return persistenceRepository.findAll();
     }
+
+    @Override
+    public List<RequiredDocument> findByProjectIdAndMilestoneName(Long projectId, String milestoneName) {
+        return persistenceRepository.findByProjectIdAndMilestoneName(projectId, milestoneName);
+    }
 }

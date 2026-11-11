@@ -9,4 +9,6 @@ public interface RequiredDocumentRepository {
     RequiredDocument save(RequiredDocument document);
 
     List<RequiredDocument> findAll();
+
+    List<RequiredDocument> findByProjectIdAndMilestoneName(Long projectId, String milestoneName);
 }
