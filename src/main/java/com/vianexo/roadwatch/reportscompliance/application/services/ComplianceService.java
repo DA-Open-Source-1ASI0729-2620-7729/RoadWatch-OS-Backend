@@ -3,12 +3,9 @@ package com.vianexo.roadwatch.reportscompliance.application.services;
 import com.vianexo.roadwatch.documentevidence.interfaces.acl.DocumentEvidenceContextFacade;
 import com.vianexo.roadwatch.reportscompliance.application.outboundservices.ComplianceDataProvider;
 import com.vianexo.roadwatch.reportscompliance.domain.model.valueobjects.ComplianceSummary;
-import com.vianexo.roadwatch.reportscompliance.domain.model.valueobjects.EnvironmentalKpi;
 import com.vianexo.roadwatch.reportscompliance.domain.model.valueobjects.ProjectCompliance;
-import com.vianexo.roadwatch.reportscompliance.domain.repositories.AuditReportRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -16,14 +13,10 @@ public class ComplianceService {
 
     private final DocumentEvidenceContextFacade documentFacade;
     private final ComplianceDataProvider dataProvider;
-    private final AuditReportRepository reportRepository;
-
     public ComplianceService(DocumentEvidenceContextFacade documentFacade,
-                             ComplianceDataProvider dataProvider,
-                             AuditReportRepository reportRepository) {
+                             ComplianceDataProvider dataProvider) {
         this.documentFacade = documentFacade;
         this.dataProvider = dataProvider;
-        this.reportRepository = reportRepository;
     }
 
     public ComplianceSummary getSummary() {
@@ -45,22 +38,6 @@ public class ComplianceService {
         return documentFacade.findProjectIds().stream()
                 .map(this::toProjectCompliance)
                 .toList();
-    }
-
-    public List<EnvironmentalKpi> getKpis() {
-        var summary = getSummary();
-        var now = Instant.now();
-        var generatedReports = reportRepository.findAll().size();
-        var uploadedDocuments = summary.requiredDocuments() - summary.pendingDocuments();
-        return List.of(
-                new EnvironmentalKpi("compliance", "Environmental compliance",
-                        summary.compliancePercentage() + "%", "percentage", now),
-                new EnvironmentalKpi("documents", "Required documents",
-                        uploadedDocuments + " / " + summary.requiredDocuments(), "documents", now),
-                new EnvironmentalKpi("incidents", "Open incidents",
-                        String.valueOf(summary.openIncidents()), "incidents", now),
-                new EnvironmentalKpi("reports", "Generated reports",
-                        String.valueOf(generatedReports), "reports", now));
     }
 
     private ProjectCompliance toProjectCompliance(Long projectId) {

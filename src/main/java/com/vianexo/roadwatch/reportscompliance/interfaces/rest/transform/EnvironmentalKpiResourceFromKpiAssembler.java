@@ -1,6 +1,6 @@
 package com.vianexo.roadwatch.reportscompliance.interfaces.rest.transform;
 
-import com.vianexo.roadwatch.reportscompliance.domain.model.valueobjects.EnvironmentalKpi;
+import com.vianexo.roadwatch.reportscompliance.domain.model.entities.EnvironmentalKpi;
 import com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources.EnvironmentalKpiResource;
 
 public final class EnvironmentalKpiResourceFromKpiAssembler {
@@ -10,10 +10,12 @@ public final class EnvironmentalKpiResourceFromKpiAssembler {
 
     public static EnvironmentalKpiResource toResourceFrom(EnvironmentalKpi kpi) {
         return new EnvironmentalKpiResource(
-                kpi.code(),
-                kpi.metricName(),
-                kpi.value(),
-                kpi.unit(),
-                kpi.calculatedAt());
+                kpi.getId(),
+                kpi.getProjectId(),
+                kpi.getCompliancePercentage(),
+                kpi.getAverageResolutionTime(),
+                kpi.getOpenIncidents(),
+                kpi.getCriticalIncidents(),
+                kpi.getCalculatedAt());
     }
 }

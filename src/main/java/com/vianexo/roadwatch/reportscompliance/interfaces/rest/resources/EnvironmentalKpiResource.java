@@ -1,11 +1,13 @@
 package com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public record EnvironmentalKpiResource(
-        String code,
-        String metricName,
-        String value,
-        String unit,
-        Instant calculatedAt) {
+        Long id,
+        Long projectId,
+        Double compliancePercentage,
+        Double averageResolutionTime,
+        Integer openIncidents,
+        Integer criticalIncidents,
+        LocalDateTime calculatedAt) {
 }

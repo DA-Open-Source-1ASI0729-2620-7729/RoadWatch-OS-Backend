@@ -1,6 +1,7 @@
 package com.vianexo.roadwatch.reportscompliance.interfaces.rest.controllers;
 
 import com.vianexo.roadwatch.reportscompliance.application.services.ComplianceService;
+import com.vianexo.roadwatch.reportscompliance.application.services.KpiService;
 import com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources.ComplianceSummaryResource;
 import com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources.EnvironmentalKpiResource;
 import com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources.ProjectReportResource;
@@ -22,9 +23,11 @@ import java.util.List;
 public class ComplianceController {
 
     private final ComplianceService complianceService;
+    private final KpiService kpiService;
 
-    public ComplianceController(ComplianceService complianceService) {
+    public ComplianceController(ComplianceService complianceService, KpiService kpiService) {
         this.complianceService = complianceService;
+        this.kpiService = kpiService;
     }
 
     @Operation(summary = "Get compliance summary")
@@ -37,7 +40,7 @@ public class ComplianceController {
     @Operation(summary = "Get environmental KPIs")
     @GetMapping("/kpis")
     public ResponseEntity<List<EnvironmentalKpiResource>> getKpis() {
-        var resources = complianceService.getKpis().stream()
+        var resources = kpiService.findAll().stream()
                 .map(EnvironmentalKpiResourceFromKpiAssembler::toResourceFrom)
                 .toList();
         return ResponseEntity.ok(resources);
