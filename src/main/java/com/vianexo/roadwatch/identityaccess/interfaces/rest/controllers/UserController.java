@@ -55,4 +55,11 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Assign role to user")
+    @PostMapping("/{userId}/roles/{roleId}")
+    public ResponseEntity<Void> assignRole(@PathVariable Long userId, @PathVariable Long roleId) {
+        userService.assignRole(userId, roleId);
+        return ResponseEntity.noContent().build();
+    }
+
 }
