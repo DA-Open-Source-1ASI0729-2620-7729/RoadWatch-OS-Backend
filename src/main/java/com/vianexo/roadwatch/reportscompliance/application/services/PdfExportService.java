@@ -6,6 +6,8 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import com.vianexo.roadwatch.reportscompliance.domain.model.aggregates.AuditReport;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @Service
 public class PdfExportService {
@@ -49,5 +52,13 @@ public class PdfExportService {
         } catch (DocumentException exception) {
             throw new IllegalStateException("Could not create report PDF", exception);
         }
+    }
+
+    public Optional<Resource> load(String filePath) {
+        var reportPath = Path.of(filePath).toAbsolutePath().normalize();
+        if (!reportPath.startsWith(reportsDirectory) || !Files.isReadable(reportPath)) {
+            return Optional.empty();
+        }
+        return Optional.of(new FileSystemResource(reportPath));
     }
 }

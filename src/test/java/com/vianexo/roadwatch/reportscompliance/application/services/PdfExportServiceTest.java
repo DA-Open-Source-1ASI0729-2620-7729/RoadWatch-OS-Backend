@@ -25,5 +25,6 @@ class PdfExportServiceTest {
 
         assertTrue(Files.exists(filePath));
         assertTrue(Files.size(filePath) > 0);
+        assertTrue(service.load(filePath.toString()).isPresent());
     }
 }

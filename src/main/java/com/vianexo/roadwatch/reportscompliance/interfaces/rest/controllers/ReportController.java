@@ -1,5 +1,6 @@
 package com.vianexo.roadwatch.reportscompliance.interfaces.rest.controllers;
 
+import com.vianexo.roadwatch.reportscompliance.application.services.PdfExportService;
 import com.vianexo.roadwatch.reportscompliance.application.services.ReportService;
 import com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources.AuditReportResource;
 import com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources.CreateAuditReportResource;
@@ -7,7 +8,11 @@ import com.vianexo.roadwatch.reportscompliance.interfaces.rest.transform.AuditRe
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/api/v1/reports")
@@ -24,9 +30,11 @@ import java.util.List;
 public class ReportController {
 
     private final ReportService reportService;
+    private final PdfExportService pdfExportService;
 
-    public ReportController(ReportService reportService) {
+    public ReportController(ReportService reportService, PdfExportService pdfExportService) {
         this.reportService = reportService;
+        this.pdfExportService = pdfExportService;
     }
 
     @Operation(summary = "Get all reports")
@@ -67,6 +75,28 @@ public class ReportController {
                 .map(AuditReportResourceFromEntityAssembler::toResourceFrom)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Download report PDF")
+    @GetMapping("/{reportId}/pdf")
+    public ResponseEntity<Resource> downloadReportPdf(@PathVariable Long reportId) {
+        var report = reportService.findById(reportId);
+        if (report.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var filePath = pdfExportService.export(report.get());
+        reportService.markGenerated(reportId, filePath);
+        var file = pdfExportService.load(filePath);
+        if (file.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var contentDisposition = ContentDisposition.attachment()
+                .filename("audit-report-" + reportId + ".pdf", StandardCharsets.UTF_8)
+                .build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString())
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(file.get());
     }
 
 }
