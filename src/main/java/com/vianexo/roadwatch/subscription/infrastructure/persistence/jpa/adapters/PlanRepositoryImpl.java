@@ -18,6 +18,11 @@ public class PlanRepositoryImpl implements PlanRepository {
     }
 
     @Override
+    public Plan save(Plan plan) {
+        return planPersistenceRepository.save(plan);
+    }
+
+    @Override
     public List<Plan> findAll() {
         return planPersistenceRepository.findAll();
     }
