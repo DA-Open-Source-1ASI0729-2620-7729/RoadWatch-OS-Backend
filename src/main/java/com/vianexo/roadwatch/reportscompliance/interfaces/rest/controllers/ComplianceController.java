@@ -32,9 +32,11 @@ public class ComplianceController {
 
     @Operation(summary = "Get compliance summary")
     @GetMapping("/summary")
-    public ResponseEntity<ComplianceSummaryResource> getSummary() {
-        return ResponseEntity.ok(
-                ComplianceSummaryResourceFromSummaryAssembler.toResourceFrom(complianceService.getSummary()));
+    public ResponseEntity<List<ComplianceSummaryResource>> getSummary() {
+        var resources = complianceService.findAll().stream()
+                .map(ComplianceSummaryResourceFromSummaryAssembler::toResourceFrom)
+                .toList();
+        return ResponseEntity.ok(resources);
     }
 
     @Operation(summary = "Get environmental KPIs")

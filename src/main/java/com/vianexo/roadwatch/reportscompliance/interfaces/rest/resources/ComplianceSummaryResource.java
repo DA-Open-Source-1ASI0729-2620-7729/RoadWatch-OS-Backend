@@ -1,10 +1,12 @@
 package com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources;
 
+import java.time.LocalDateTime;
+
 public record ComplianceSummaryResource(
-        int compliancePercentage,
-        int requiredDocuments,
-        int pendingDocuments,
-        int openIncidents,
-        int criticalIncidents,
-        Double averageResolutionHours) {
+        Long id,
+        Long projectId,
+        Integer compliantMeasurements,
+        Integer nonCompliantMeasurements,
+        Double compliancePercentage,
+        LocalDateTime calculatedAt) {
 }
