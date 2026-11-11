@@ -1,10 +1,12 @@
 package com.vianexo.roadwatch.documentevidence.application.services;
 
+import com.vianexo.roadwatch.documentevidence.application.events.DocumentVersionUploadedEvent;
 import com.vianexo.roadwatch.documentevidence.domain.model.aggregates.NormativeDocument;
 import com.vianexo.roadwatch.documentevidence.domain.model.valueobjects.DocumentStatus;
 import com.vianexo.roadwatch.documentevidence.domain.repositories.DocumentVersionRepository;
 import com.vianexo.roadwatch.documentevidence.domain.repositories.NormativeDocumentRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,14 +15,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class NormativeDocumentServiceTest {
 
     private final NormativeDocumentRepository documentRepository = mock(NormativeDocumentRepository.class);
     private final DocumentVersionRepository versionRepository = mock(DocumentVersionRepository.class);
+    private final ApplicationEventPublisher eventPublisher = mock(ApplicationEventPublisher.class);
     private final NormativeDocumentService documentService = new NormativeDocumentService(
-            documentRepository, versionRepository);
+            documentRepository, versionRepository, eventPublisher);
 
     @Test
     void createsDocument() {
@@ -44,6 +48,7 @@ class NormativeDocumentServiceTest {
         assertTrue(result.isPresent());
         assertEquals(DocumentStatus.UPLOADED, result.get().getStatus());
         assertEquals(1, result.get().getCurrentVersion());
+        verify(eventPublisher).publishEvent(new DocumentVersionUploadedEvent(10L));
     }
 
     @Test

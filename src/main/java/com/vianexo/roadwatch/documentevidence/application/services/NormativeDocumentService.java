@@ -1,10 +1,12 @@
 package com.vianexo.roadwatch.documentevidence.application.services;
 
+import com.vianexo.roadwatch.documentevidence.application.events.DocumentVersionUploadedEvent;
 import com.vianexo.roadwatch.documentevidence.domain.model.aggregates.NormativeDocument;
 import com.vianexo.roadwatch.documentevidence.domain.model.entities.DocumentVersion;
 import com.vianexo.roadwatch.documentevidence.domain.repositories.DocumentVersionRepository;
 import com.vianexo.roadwatch.documentevidence.domain.repositories.NormativeDocumentRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -16,11 +18,14 @@ public class NormativeDocumentService {
 
     private final NormativeDocumentRepository documentRepository;
     private final DocumentVersionRepository versionRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public NormativeDocumentService(NormativeDocumentRepository documentRepository,
-                                    DocumentVersionRepository versionRepository) {
+                                    DocumentVersionRepository versionRepository,
+                                    ApplicationEventPublisher eventPublisher) {
         this.documentRepository = documentRepository;
         this.versionRepository = versionRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public List<NormativeDocument> findAll() {
@@ -47,6 +52,7 @@ public class NormativeDocumentService {
                     fileName,
                     storedFileName,
                     uploadedByUserId));
+            eventPublisher.publishEvent(new DocumentVersionUploadedEvent(savedDocument.getProjectId()));
             return savedDocument;
         });
     }
