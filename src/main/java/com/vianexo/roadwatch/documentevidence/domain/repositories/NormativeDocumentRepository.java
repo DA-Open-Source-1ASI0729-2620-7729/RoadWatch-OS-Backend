@@ -11,5 +11,7 @@ public interface NormativeDocumentRepository {
 
     List<NormativeDocument> findAll();
 
+    List<NormativeDocument> findByProjectId(Long projectId);
+
     Optional<NormativeDocument> findById(Long id);
 }

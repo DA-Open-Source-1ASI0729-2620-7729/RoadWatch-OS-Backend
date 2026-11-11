@@ -31,13 +31,13 @@ public class NormativeDocumentService {
         return documentRepository.findById(id);
     }
 
-    public NormativeDocument create(Long projectId, String name) {
+    public NormativeDocument createDocument(Long projectId, String name) {
         return documentRepository.save(new NormativeDocument(projectId, name));
     }
 
     @Transactional
-    public Optional<NormativeDocument> registerUpload(Long documentId, String fileName,
-                                                      String storedFileName, Long uploadedByUserId) {
+    public Optional<NormativeDocument> uploadNewVersion(Long documentId, String fileName,
+                                                        String storedFileName, Long uploadedByUserId) {
         return documentRepository.findById(documentId).map(document -> {
             document.markAsUploaded();
             var savedDocument = documentRepository.save(document);
@@ -49,6 +49,17 @@ public class NormativeDocumentService {
                     uploadedByUserId));
             return savedDocument;
         });
+    }
+
+    public Optional<NormativeDocument> markDocumentMissing(Long documentId) {
+        return documentRepository.findById(documentId).map(document -> {
+            document.markAsMissing();
+            return documentRepository.save(document);
+        });
+    }
+
+    public List<NormativeDocument> findByProject(Long projectId) {
+        return documentRepository.findByProjectId(projectId);
     }
 
     public Optional<DocumentVersion> findCurrentVersion(Long documentId) {

@@ -28,6 +28,11 @@ public class NormativeDocumentRepositoryImpl implements NormativeDocumentReposit
     }
 
     @Override
+    public List<NormativeDocument> findByProjectId(Long projectId) {
+        return persistenceRepository.findByProjectId(projectId);
+    }
+
+    @Override
     public Optional<NormativeDocument> findById(Long id) {
         return persistenceRepository.findById(id);
     }

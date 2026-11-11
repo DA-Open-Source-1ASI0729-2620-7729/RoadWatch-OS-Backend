@@ -63,7 +63,7 @@ public class NormativeDocumentController {
     @PostMapping
     public ResponseEntity<NormativeDocumentResource> createDocument(
             @Valid @RequestBody CreateNormativeDocumentResource resource) {
-        var document = documentService.create(resource.projectId(), resource.name());
+        var document = documentService.createDocument(resource.projectId(), resource.name());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(NormativeDocumentResourceFromEntityAssembler.toResourceFrom(document));
     }
@@ -82,7 +82,7 @@ public class NormativeDocumentController {
         }
         var fileName = Objects.requireNonNullElse(file.getOriginalFilename(), "file");
         var storedFileName = fileStorageService.store(file);
-        return documentService.registerUpload(documentId, fileName, storedFileName, uploadedByUserId)
+        return documentService.uploadNewVersion(documentId, fileName, storedFileName, uploadedByUserId)
                 .map(NormativeDocumentResourceFromEntityAssembler::toResourceFrom)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
