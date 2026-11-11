@@ -1,7 +1,7 @@
 package com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources;
 
-import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record AuditReportResource(
@@ -11,8 +11,7 @@ public record AuditReportResource(
         LocalDate periodStart,
         LocalDate periodEnd,
         String status,
-        LocalDate issuedAt,
+        LocalDateTime generatedAt,
         List<String> sections,
-        Instant generatedAt,
         String fileUrl) {
 }

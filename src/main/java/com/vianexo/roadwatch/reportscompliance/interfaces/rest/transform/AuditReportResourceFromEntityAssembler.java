@@ -1,12 +1,9 @@
 package com.vianexo.roadwatch.reportscompliance.interfaces.rest.transform;
 
 import com.vianexo.roadwatch.reportscompliance.domain.model.aggregates.AuditReport;
-import com.vianexo.roadwatch.reportscompliance.domain.model.valueobjects.AuditReportStatus;
 import com.vianexo.roadwatch.reportscompliance.interfaces.rest.resources.AuditReportResource;
 
 public final class AuditReportResourceFromEntityAssembler {
-
-    private static final String PDF_URL_PREFIX = "/api/v1/reports/";
 
     private AuditReportResourceFromEntityAssembler() {
     }
@@ -18,18 +15,9 @@ public final class AuditReportResourceFromEntityAssembler {
                 report.getProjectName(),
                 report.getPeriodStart(),
                 report.getPeriodEnd(),
-                toLabel(report.getStatus()),
-                report.getIssuedAt(),
+                report.getStatus().name(),
+                report.getGeneratedAt(),
                 report.getSections(),
-                report.getCreatedAt().toInstant(),
-                PDF_URL_PREFIX + report.getId() + "/pdf");
-    }
-
-    private static String toLabel(AuditReportStatus status) {
-        return switch (status) {
-            case DRAFT -> "Borrador";
-            case ISSUED -> "Emitido";
-            case OBSERVED -> "Observado";
-        };
+                report.getFileUrl());
     }
 }

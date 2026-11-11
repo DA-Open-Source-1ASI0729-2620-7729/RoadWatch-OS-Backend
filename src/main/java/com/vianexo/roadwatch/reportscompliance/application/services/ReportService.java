@@ -32,9 +32,9 @@ public class ReportService {
                 new AuditReport(projectId, projectName, periodStart, periodEnd, sections));
     }
 
-    public Optional<AuditReport> issue(Long id) {
+    public Optional<AuditReport> markGenerated(Long id, String fileUrl) {
         return reportRepository.findById(id).map(report -> {
-            report.issue();
+            report.markGenerated(fileUrl);
             return reportRepository.save(report);
         });
     }

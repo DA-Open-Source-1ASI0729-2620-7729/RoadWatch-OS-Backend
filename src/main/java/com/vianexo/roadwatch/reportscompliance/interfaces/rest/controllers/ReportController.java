@@ -63,7 +63,7 @@ public class ReportController {
     @Operation(summary = "Issue a report")
     @PostMapping("/{reportId}/issue")
     public ResponseEntity<AuditReportResource> issueReport(@PathVariable Long reportId) {
-        return reportService.issue(reportId)
+        return reportService.markGenerated(reportId, null)
                 .map(AuditReportResourceFromEntityAssembler::toResourceFrom)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
