@@ -17,6 +17,7 @@ public final class UserResourceFromEntityAssembler {
                 user.getLastName(),
                 user.getEmail(),
                 user.getStatus(),
+                user.getSubscriptionAccountId(),
                 user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet()),
                 user.getCreatedAt().toInstant(),
                 user.getUpdatedAt().toInstant());

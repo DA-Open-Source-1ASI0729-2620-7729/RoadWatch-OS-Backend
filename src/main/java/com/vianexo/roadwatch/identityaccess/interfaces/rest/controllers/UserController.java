@@ -31,7 +31,12 @@ public class UserController {
     @Operation(summary = "Register user")
     @PostMapping
     public ResponseEntity<UserResource> registerUser(@Valid @RequestBody RegisterUserResource resource) {
-        var user = new User(resource.firstName(), resource.lastName(), resource.email(), resource.password());
+        var user = new User(
+                resource.firstName(),
+                resource.lastName(),
+                resource.email(),
+                resource.password(),
+                resource.subscriptionAccountId());
         var registeredUser = userService.registerUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserResourceFromEntityAssembler.toResourceFrom(registeredUser));
     }
@@ -53,6 +58,15 @@ public class UserController {
     public ResponseEntity<Void> deactivateUser(@PathVariable Long userId) {
         userService.deactivateUser(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Assign subscription account to user")
+    @PatchMapping("/{userId}/subscription-account/{accountId}")
+    public ResponseEntity<UserResource> assignSubscriptionAccount(
+            @PathVariable Long userId,
+            @PathVariable Long accountId) {
+        var user = userService.assignSubscriptionAccount(userId, accountId);
+        return ResponseEntity.ok(UserResourceFromEntityAssembler.toResourceFrom(user));
     }
 
     @Operation(summary = "Assign role to user")

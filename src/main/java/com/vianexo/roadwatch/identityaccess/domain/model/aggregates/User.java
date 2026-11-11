@@ -46,6 +46,9 @@ public class User extends AuditableAbstractPersistenceEntity {
     @Column(nullable = false)
     private UserStatus status;
 
+    @Column(name = "subscription_account_id")
+    private Long subscriptionAccountId;
+
     @ManyToMany
     @JoinTable(
             name = "user_roles",
@@ -54,10 +57,15 @@ public class User extends AuditableAbstractPersistenceEntity {
     private Set<Role> roles = new HashSet<>();
 
     public User(String firstName, String lastName, String email, String passwordHash) {
+        this(firstName, lastName, email, passwordHash, null);
+    }
+
+    public User(String firstName, String lastName, String email, String passwordHash, Long subscriptionAccountId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.subscriptionAccountId = subscriptionAccountId;
         this.status = UserStatus.PENDING;
     }
 
@@ -71,6 +79,10 @@ public class User extends AuditableAbstractPersistenceEntity {
 
     public void deactivate() {
         status = UserStatus.INACTIVE;
+    }
+
+    public void assignSubscriptionAccount(Long accountId) {
+        subscriptionAccountId = accountId;
     }
 
     public void assignRole(Role role) {

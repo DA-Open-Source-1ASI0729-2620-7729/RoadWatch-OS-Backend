@@ -50,6 +50,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User assignSubscriptionAccount(Long userId, Long accountId) {
+        var user = findById(userId);
+        user.assignSubscriptionAccount(accountId);
+        return userRepository.save(user);
+    }
+
     @Transactional
     public void assignRole(Long userId, Long roleId) {
         var user = findById(userId);

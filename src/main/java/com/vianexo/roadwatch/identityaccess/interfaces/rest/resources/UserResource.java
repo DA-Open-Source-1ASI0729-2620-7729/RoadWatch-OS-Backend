@@ -12,6 +12,7 @@ public record UserResource(
         String lastName,
         String email,
         UserStatus status,
+        Long subscriptionAccountId,
         Set<RoleType> roles,
         Instant createdAt,
         Instant updatedAt) {
