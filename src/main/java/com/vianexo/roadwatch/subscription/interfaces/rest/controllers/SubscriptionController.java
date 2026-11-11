@@ -47,15 +47,17 @@ public class SubscriptionController {
     public ResponseEntity<SubscriptionResource> getCurrentSubscription(
 
             @RequestHeader("Authorization") String authorization) {
-        var token = extractToken(authorization);
-        var userId = tokenProvider.getUserId(token);
-        var user = userService.findById(userId);
+        var subscription = subscriptionService.getSubscription(currentAccountId(authorization));
+        return ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.toResourceFrom(subscription));
+    }
 
-        if (user.getSubscriptionAccountId() == null) {
-            throw new IllegalArgumentException("Subscription account is not assigned to the current user");
-        }
-
-        var subscription = subscriptionService.getSubscription(user.getSubscriptionAccountId());
+    @Operation(summary = "Change current subscription plan")
+    @ApiResponse(responseCode = "200", description = "Subscription plan changed")
+    @PatchMapping("/current/plan/{planId}")
+    public ResponseEntity<SubscriptionResource> changeCurrentSubscriptionPlan(
+            @RequestHeader("Authorization") String authorization,
+            @PathVariable Long planId) {
+        var subscription = subscriptionService.changePlan(currentAccountId(authorization), planId);
         return ResponseEntity.ok(SubscriptionResourceFromEntityAssembler.toResourceFrom(subscription));
     }
 
@@ -90,5 +92,16 @@ public class SubscriptionController {
 
 
         return token;
+    }
+
+    private Long currentAccountId(String authorization) {
+        var userId = tokenProvider.getUserId(extractToken(authorization));
+        var user = userService.findById(userId);
+
+        if (user.getSubscriptionAccountId() == null) {
+            throw new IllegalArgumentException("Subscription account is not assigned to the current user");
+        }
+
+        return user.getSubscriptionAccountId();
     }
 }
