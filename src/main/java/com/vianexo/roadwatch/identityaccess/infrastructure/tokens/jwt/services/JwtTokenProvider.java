@@ -21,8 +21,8 @@ public class JwtTokenProvider implements TokenProvider {
     private final long expirationHours;
 
     public JwtTokenProvider(
-            @Value("${JWT_SECRET}") String secret,
-            @Value("${JWT_EXPIRATION_HOURS:24}") long expirationHours) {
+            @Value("${app.jwt.secret}") String secret,
+            @Value("${app.jwt.expiration-hours}") long expirationHours) {
         this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationHours = expirationHours;
     }
