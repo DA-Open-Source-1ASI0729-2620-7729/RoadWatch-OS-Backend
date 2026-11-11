@@ -1,5 +1,6 @@
 package com.vianexo.roadwatch.environmentalmonitoring.application.internal.commandservices;
 
+import com.vianexo.roadwatch.incidentmitigation.application.events.EnvironmentalAlertGeneratedEvent;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.EnvironmentalAlert;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.aggregates.EnvironmentalMeasurement;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.model.commands.RegisterEnvironmentalMeasurementCommand;
@@ -10,6 +11,7 @@ import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.Environ
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.EnvironmentalMeasurementRepository;
 import com.vianexo.roadwatch.environmentalmonitoring.domain.repositories.NormativeThresholdRepository;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,15 +21,18 @@ public class EnvironmentalMeasurementCommandServiceImpl implements Environmental
     private final EnvironmentalMeasurementRepository measurementRepository;
     private final NormativeThresholdRepository thresholdRepository;
     private final EnvironmentalAlertRepository alertRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public EnvironmentalMeasurementCommandServiceImpl(
             EnvironmentalMeasurementRepository measurementRepository,
             NormativeThresholdRepository thresholdRepository,
-            EnvironmentalAlertRepository alertRepository
+            EnvironmentalAlertRepository alertRepository,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.measurementRepository = measurementRepository;
         this.thresholdRepository = thresholdRepository;
         this.alertRepository = alertRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -52,6 +57,14 @@ public class EnvironmentalMeasurementCommandServiceImpl implements Environmental
                     savedMeasurement.getId(),
                     "Environmental threshold exceeded");
             alertRepository.save(alert);
+
+            if (status == MeasurementStatus.NON_COMPLIANT) {
+                eventPublisher.publishEvent(new EnvironmentalAlertGeneratedEvent(
+                        savedMeasurement.getId(),
+                        "Environmental threshold exceeded",
+                        alert.getMessage(),
+                        "HIGH"));
+            }
         }
 
         return savedMeasurement;
