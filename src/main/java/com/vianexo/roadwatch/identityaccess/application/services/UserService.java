@@ -6,6 +6,7 @@ import com.vianexo.roadwatch.identityaccess.application.outboundservices.hashing
 import com.vianexo.roadwatch.identityaccess.domain.repositories.RoleRepository;
 import com.vianexo.roadwatch.identityaccess.domain.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -49,6 +50,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void assignRole(Long userId, Long roleId) {
         var user = findById(userId);
         var role = findRole(roleId);
@@ -56,6 +58,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
     public void removeRole(Long userId, Long roleId) {
         var user = findById(userId);
         var role = findRole(roleId);
