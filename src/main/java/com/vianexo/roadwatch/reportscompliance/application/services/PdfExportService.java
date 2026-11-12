@@ -35,8 +35,8 @@ public class PdfExportService {
 
         try {
             Files.createDirectories(reportsDirectory);
-            // basado en la documentacion oficial de openpdf
-            // https://github.com/LibrePDF/OpenPDF
+            //realizado con la documentacion oficial de OpenPdf
+            //link: https://github.com/LibrePDF/OpenPDF
             var document = new Document();
             PdfWriter.getInstance(document, Files.newOutputStream(reportPath));
             // crea el documento pdf
